@@ -6,24 +6,41 @@
   "scripts": {
     "clean": "rm -rf ../theme-dist",
     "dev": "vite build --watch --config ./vite.config.js",
-    "build": "npm-run-all clean vite:build copy sprite",
     "vite:build": "vite build --config ./vite.config.js",
+    "build:blocks": "rollup -c ./rollup.blocks.config.cjs",
+    "dev:blocks": "rollup -c ./rollup.blocks.config.js --watch",
+    "build": "npm-run-all clean vite:build build:blocks copy sprite",
     "copy": "node ./copy.js",
     "copy:watch": "node ./copy.js --watch",
     "sprite": "node ./sprite.js",
     "sprite:watch": "node ./sprite.js --watch",
     "serve": "node ./bs.js",
-    "start": "npm-run-all clean vite:build copy sprite --parallel dev copy:watch sprite:watch serve"
+    "start": "npm-run-all clean vite:build build:blocks copy sprite --parallel dev dev:blocks copy:watch sprite:watch serve"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
+    "@rollup/plugin-alias": "^5.1.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "@wordpress/babel-preset-default": "^8.31.0",
+    "@wordpress/icons": "^10.31.0",
     "browser-sync": "^3.0.4",
     "concurrently": "^9.2.1",
     "fs-extra": "^11.3.2",
     "npm-run-all": "^4.1.5",
+    "rollup-plugin-external-globals": "^0.13.0",
     "sass-embedded": "^1.93.2",
     "svg-sprite": "^2.0.4",
     "vite": "^5.0.0",
+    "vite-plugin-gutenberg-blocks": "^2.5.0",
     "vite-plugin-static-copy": "^1.0.6",
     "vite-plugin-svg-sprite": "^0.6.3"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.28.4"
   }
 }

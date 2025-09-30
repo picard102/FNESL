@@ -3,3 +3,4 @@ wp/
 theme-dist/
 wp-config.php
 .DS_Store
+build/package-lock.json

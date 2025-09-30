@@ -21,6 +21,8 @@ const excludePatterns = [/\.timestamp-/];
 function shouldCopy(src) {
   const rel = path.relative(srcDir, src);
   if (!rel) return true; // root
+
+  // skip dirs we don't want
   if (
     rel.startsWith("scss") ||
     rel.startsWith("js") ||
@@ -28,8 +30,20 @@ function shouldCopy(src) {
   ) {
     return false;
   }
+
+  // skip raw JS/JSX files (Vite handles them)
+  if (rel.endsWith(".js") || rel.endsWith(".jsx")) {
+    return false;
+  }
+
+  // skip build junk
+  if (excludePatterns.some((pat) => pat.test(rel))) {
+    return false;
+  }
+
   return true;
 }
+
 
 async function copyAll() {
   await fs.copy(srcDir, distDir, { filter: shouldCopy });
