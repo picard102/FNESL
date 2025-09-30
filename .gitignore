@@ -2,3 +2,4 @@ build/
 wp/
 theme-dist/
 wp-config.php
+.DS_Store
