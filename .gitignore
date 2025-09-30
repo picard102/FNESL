@@ -1,0 +1,4 @@
+build/
+wp/
+theme-dist/
+wp-config.php
