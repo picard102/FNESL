@@ -49,3 +49,18 @@ function fnesl_editor_assets() {
     }
 }
 add_action('enqueue_block_editor_assets', 'fnesl_editor_assets');
+
+
+function fnesl_browsersync() {
+	if ( defined('WP_DEBUG') && WP_DEBUG && str_contains($_SERVER['SERVER_NAME'], 'fnesl.local') ) {
+			wp_enqueue_script(
+					'browsersync',
+					'https://fnesl.local:2519/browser-sync/browser-sync-client.js',
+					[],
+					null,
+					true
+			);
+	}
+}
+add_action('wp_enqueue_scripts', 'fnesl_browsersync');
+add_action( 'admin_enqueue_scripts', 'fnesl_browsersync' );

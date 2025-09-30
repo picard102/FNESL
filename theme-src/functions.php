@@ -18,11 +18,18 @@ add_action('after_setup_theme', function () {
 });
 
 
-add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
-	if ( str_starts_with( $handle, 'fnesl-project-hero' ) ) {
-			return '<script type="module" src="' . esc_url( $src ) . '" id="' . esc_attr( $handle ) . '"></script>';
-	}
-	return $tag;
-}, 10, 3 );
+// add_filter( 'script_loader_tag', function( $tag, $handle, $src ) {
+// 	if ( str_starts_with( $handle, 'fnesl-project-hero' ) ) {
+// 			return '<script type="module" src="' . esc_url( $src ) . '" id="' . esc_attr( $handle ) . '"></script>';
+// 	}
+// 	return $tag;
+// }, 10, 3 );
 
 
+// functions.php
+add_action( 'enqueue_block_editor_assets', function() {
+    wp_add_inline_script(
+        'wp-editor',
+        'wp.data.dispatch("core/editor").lockPostAutosaving();'
+    );
+});
