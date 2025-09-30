@@ -1,4 +1,4 @@
-build/
+build/node_modules/
 wp/
 theme-dist/
 wp-config.php
