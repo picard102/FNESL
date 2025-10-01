@@ -3,6 +3,16 @@
  * Register "Projects" Custom Post Type
  */
 
+/**
+ * Registers the 'project' custom post type for Projects.
+ *
+ * - Sets up labels for admin UI and REST API.
+ * - Enables support for title, editor, thumbnail, excerpt, and custom fields.
+ * - Makes the post type publicly queryable, with archive and REST API support.
+ * - Uses 'projects' as the URL slug and displays in the admin menu with a portfolio icon.
+ *
+ * @see https://developer.wordpress.org/reference/functions/register_post_type/
+ */
 add_action('init', function () {
     $labels = [
         'name'               => __('Projects', 'fnesl'),

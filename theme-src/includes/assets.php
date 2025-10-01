@@ -3,6 +3,16 @@
  * Enqueue theme assets from Vite manifests
  */
 
+/**
+ * Retrieves the value of a specified entry from the manifest.json file.
+ *
+ * Loads and caches the manifest.json file from the theme's stylesheet directory
+ * on the first call, then returns the value associated with the given entry key.
+ * If the manifest file does not exist or the entry is not found, returns null.
+ *
+ * @param string $entry The key of the manifest entry to retrieve.
+ * @return mixed|null The value of the manifest entry, or null if not found.
+ */
 function fnesl_get_manifest_entry($entry) {
     static $manifest = null;
 
@@ -18,6 +28,17 @@ function fnesl_get_manifest_entry($entry) {
     return $manifest[$entry] ?? null;
 }
 
+/**
+ * Enqueues theme assets (CSS and JS) for the front-end.
+ *
+ * Retrieves the theme's asset manifest entry for 'js/theme.entry.js' and enqueues
+ * associated CSS files and the main JavaScript file. Uses the stylesheet directory URI
+ * as the base path for assets. Hooks into 'wp_enqueue_scripts'.
+ *
+ * @see fnesl_get_manifest_entry() Retrieves asset manifest entry.
+ * @see wp_enqueue_style() Enqueues CSS files.
+ * @see wp_enqueue_script() Enqueues JS files.
+ */
 function fnesl_enqueue_assets() {
     $dist_uri = get_stylesheet_directory_uri();
 
@@ -34,6 +55,16 @@ function fnesl_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'fnesl_enqueue_assets');
 
+/**
+ * Enqueues custom editor assets (CSS and JS) for the block editor.
+ *
+ * Retrieves the asset manifest entry for the editor, and enqueues associated CSS and JS files
+ * for use in the WordPress block editor. Uses the theme's stylesheet directory URI as the base path.
+ *
+ * Hooks into 'enqueue_block_editor_assets'.
+ *
+ * @see fnesl_get_manifest_entry()
+ */
 function fnesl_editor_assets() {
     $dist_uri = get_stylesheet_directory_uri();
 
@@ -51,6 +82,17 @@ function fnesl_editor_assets() {
 add_action('enqueue_block_editor_assets', 'fnesl_editor_assets');
 
 
+/**
+ * Enqueues the BrowserSync client script for live reloading during development.
+ *
+ * This function checks if WordPress debugging is enabled and if the site is running
+ * on the local development domain ('fnesl.local'). If both conditions are met,
+ * it enqueues the BrowserSync client script to facilitate live reloading.
+ *
+ * The script is enqueued for both frontend and admin pages.
+ *
+ * @see https://browsersync.io/
+ */
 function fnesl_browsersync() {
 	if ( defined('WP_DEBUG') && WP_DEBUG && str_contains($_SERVER['SERVER_NAME'], 'fnesl.local') ) {
 			wp_enqueue_script(
