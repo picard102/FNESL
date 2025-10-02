@@ -1,8 +1,8 @@
-// Change from import/export to CommonJS require/module.exports
+// build/postcss.config.cjs
 const tailwind = require("@tailwindcss/postcss");
 const autoprefixer = require("autoprefixer");
 const nesting = require("postcss-nesting");
 
 module.exports = {
-  plugins: [tailwind(), autoprefixer(), nesting()],
+  plugins: [ autoprefixer(), nesting()],
 };

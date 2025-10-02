@@ -43,6 +43,7 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.4"
+    "@babel/runtime": "^7.28.4",
+    "postcss-import": "^16.1.1"
   }
 }

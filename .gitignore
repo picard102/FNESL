@@ -5,3 +5,4 @@ wp-config.php
 .DS_Store
 package-lock.json
 .vite
+node_modules

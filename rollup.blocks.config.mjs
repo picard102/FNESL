@@ -1,4 +1,4 @@
-// build/rollup.blocks.config.mjs
+// rollup.blocks.config.mjs
 import path from "path";
 import fg from "fast-glob";
 import resolve from "@rollup/plugin-node-resolve";
@@ -14,9 +14,13 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Source and output roots
-const srcRoot = path.resolve(__dirname, "../theme-src/includes/blocks");
-const outRoot = path.resolve(__dirname, "../theme-dist/includes/blocks");
+// ✅ Since config is now at project root:
+const srcRoot = path.resolve(__dirname, "theme-src/includes/blocks");
+const outRoot = path.resolve(__dirname, "theme-dist/includes/blocks");
+
+console.log("[Rollup] Config loaded from:", __dirname);
+console.log("[Rollup] srcRoot:", srcRoot);
+console.log("[Rollup] outRoot:", outRoot);
 
 // WP externals
 const wpExternals = [
@@ -61,12 +65,19 @@ function assetPhpPlugin() {
 }
 
 export default () => {
+  // ✅ Glob relative to srcRoot now
   const entryFiles = fg.sync("**/index.@(js|jsx)", { cwd: srcRoot });
 
   console.log("📦 Found blocks:", entryFiles);
 
+  if (!entryFiles.length) {
+    console.warn("[Rollup] ⚠️ No block entry files found in:", srcRoot);
+  }
+
   return entryFiles.map((f) => {
     const blockDir = path.dirname(f);
+
+    console.log(`[Rollup] Building block: ${blockDir}, entry: ${f}`);
 
     return {
       input: path.resolve(srcRoot, f),
@@ -92,7 +103,7 @@ export default () => {
           extensions: [".js", ".jsx"],
         }),
         postcss({
-          extract: true, // writes CSS files alongside JS
+          extract: true,
           minimize: true,
           sourceMap: true,
           extensions: [".css", ".scss"],
