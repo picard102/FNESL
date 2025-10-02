@@ -9,7 +9,7 @@ import {
 import { __ } from "@wordpress/i18n";
 import { PanelBody, Button, SelectControl } from "@wordpress/components";
 
-import "./style.scss";
+import "./style.css";
 
 
 registerBlockType("fnesl/project-hero", {

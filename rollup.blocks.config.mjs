@@ -5,10 +5,14 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import babel from "@rollup/plugin-babel";
 import fs from "fs";
-import postcss from "rollup-plugin-postcss";
+
 import tailwind from "@tailwindcss/postcss";
 import autoprefixer from "autoprefixer";
 import { fileURLToPath } from "url";
+
+import postcss from "rollup-plugin-postcss";
+import postcssConfig from "./postcss.config.cjs"; // ✅ load shared config
+
 
 // Recreate __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -108,7 +112,19 @@ export default () => {
           sourceMap: true,
           extensions: [".css", ".scss"],
           use: ["sass"],
-          plugins: [tailwind(), autoprefixer()],
+          plugins: [
+            (root, result) => {
+              console.log(
+                "[Rollup/PostCSS] Processing block CSS:",
+                result.opts.from
+              );
+              console.log(
+                "[Rollup/PostCSS] First 200 chars:",
+                root.toString().slice(0, 200)
+              );
+            },
+            ...postcssConfig.plugins,
+          ],
         }),
         assetPhpPlugin(),
       ],
