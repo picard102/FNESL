@@ -8,10 +8,6 @@ module.exports = {
     // Debug plugin: logs which file is being processed
     (root, result) => {
       console.log("[PostCSS] Processing:", result.opts.from);
-      console.log(
-        "[PostCSS] First 200 chars:\n",
-        root.toString().slice(0, 200)
-      );
     },
     tailwind(), // ✅ Run Tailwind v4
     nesting, // ✅ PostCSS nesting

@@ -4,6 +4,9 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const srcDir = path.resolve(__dirname, "theme-src");
+
+console.log("[bs.js] Watching srcDir:", srcDir);
 
 const bs = browserSync.create();
 
@@ -14,10 +17,10 @@ bs.init({
     cert: "/Applications/MAMP/Library/OpenSSL/certs/fnesl.local.crt",
   },
   files: [
-    "../theme-dist/**/*.php",
-    "../theme-dist/**/*.js",
-    "../theme-dist/**/*.css",
-    "../theme-dist/**/*.{jpg,jpeg,png,gif,webp,svg,html}",
+    path.join(srcDir, "**/*.php"),
+    path.join(srcDir, "**/*.js"),
+    path.join(srcDir, "**/*.css"),
+    path.join(srcDir, "**/*.{jpg,jpeg,png,gif,webp,svg,html}"),
   ],
   reloadDelay: 500, // wait 500ms before reloading
 

@@ -1,3 +1,4 @@
+// copy.js
 import fs from "fs-extra";
 import path from "path";
 import chokidar from "chokidar";
@@ -6,8 +7,12 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const srcDir = path.resolve(__dirname, "../theme-src");
-const distDir = path.resolve(__dirname, "../theme-dist");
+// We’re already at /fnesl root, so no need for "../"
+const srcDir = path.resolve(__dirname, "theme-src");
+const distDir = path.resolve(__dirname, "theme-dist");
+
+console.log("[copy.js] srcDir:", srcDir);
+console.log("[copy.js] distDir:", distDir);
 
 const excludeDirs = [
   "scss",
@@ -20,30 +25,20 @@ const excludePatterns = [/\.timestamp-/];
 
 function shouldCopy(src) {
   const rel = path.relative(srcDir, src);
-  if (!rel) return true; // root
+  if (!rel) return true;
 
-  // skip dirs we don't want
   if (
     rel.startsWith("scss") ||
     rel.startsWith("js") ||
     rel.startsWith("assets/icons")
-  ) {
+  )
     return false;
-  }
 
-  // skip raw JS/JSX files (Vite handles them)
-  if (rel.endsWith(".js") || rel.endsWith(".jsx")) {
-    return false;
-  }
-
-  // skip build junk
-  if (excludePatterns.some((pat) => pat.test(rel))) {
-    return false;
-  }
+  if (rel.endsWith(".js") || rel.endsWith(".jsx")) return false;
+  if (excludePatterns.some((pat) => pat.test(rel))) return false;
 
   return true;
 }
-
 
 async function copyAll() {
   await fs.copy(srcDir, distDir, { filter: shouldCopy });
@@ -61,7 +56,7 @@ async function copyOne(filePath) {
 async function run() {
   console.log("🚀 copy.js starting…");
   try {
-    await copyAll(); // initial copy
+    await copyAll();
   } catch (err) {
     console.error("❌ Initial copy failed:", err);
   }

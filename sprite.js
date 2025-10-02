@@ -1,3 +1,4 @@
+// sprite.js
 import path from "path";
 import fs from "fs";
 import chokidar from "chokidar";
@@ -7,8 +8,12 @@ import SVGSpriter from "svg-sprite";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const svgInputDir = path.resolve(__dirname, "../theme-src/assets/icons");
-const svgOutputDir = path.resolve(__dirname, "../theme-dist/assets");
+// Root-relative now
+const svgInputDir = path.resolve(__dirname, "theme-src/assets/icons");
+const svgOutputDir = path.resolve(__dirname, "theme-dist/assets");
+
+console.log("[sprite.js] svgInputDir:", svgInputDir);
+console.log("[sprite.js] svgOutputDir:", svgOutputDir);
 
 function buildSprite() {
   fs.mkdirSync(svgOutputDir, { recursive: true });
@@ -49,7 +54,7 @@ function buildSprite() {
 
 function run() {
   console.log("🚀 sprite.js starting…");
-  buildSprite(); // initial build
+  buildSprite();
 
   if (process.argv.includes("--watch")) {
     console.log("👀 Watching SVG icons in", svgInputDir);

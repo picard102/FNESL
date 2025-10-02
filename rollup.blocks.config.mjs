@@ -118,10 +118,6 @@ export default () => {
                 "[Rollup/PostCSS] Processing block CSS:",
                 result.opts.from
               );
-              console.log(
-                "[Rollup/PostCSS] First 200 chars:",
-                root.toString().slice(0, 200)
-              );
             },
             ...postcssConfig.plugins,
           ],
