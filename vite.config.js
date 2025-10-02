@@ -18,7 +18,7 @@ export default defineConfig({
   base: "",
   build: {
     outDir: path.resolve(__dirname, "theme-dist"),
-    emptyOutDir: true, // clean assets dir each build
+    emptyOutDir: false, // 🚀 prevents clearing dist
     manifest: true,
     rollupOptions: {
       input: {

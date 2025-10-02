@@ -28,7 +28,7 @@ function shouldCopy(src) {
   if (!rel) return true;
 
   if (
-    rel.startsWith("scss") ||
+    rel.startsWith("css") ||
     rel.startsWith("js") ||
     rel.startsWith("assets/icons")
   )
