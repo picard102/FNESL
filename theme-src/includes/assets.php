@@ -13,20 +13,38 @@
  * @param string $entry The key of the manifest entry to retrieve.
  * @return mixed|null The value of the manifest entry, or null if not found.
  */
-function fnesl_get_manifest_entry($entry) {
-    static $manifest = null;
+function fnesl_get_manifest_entry( $entry ) {
+	static $manifest = null;
 
-    if ($manifest === null) {
-        $manifest_path = get_stylesheet_directory() . '/manifest.json';
-        if (file_exists($manifest_path)) {
-            $manifest = json_decode(file_get_contents($manifest_path), true);
-        } else {
-            $manifest = [];
-        }
-    }
+	if ( $manifest === null ) {
+			$manifest_path = get_stylesheet_directory() . '/assets/.vite/manifest.json';
 
-    return $manifest[$entry] ?? null;
+			if ( file_exists( $manifest_path ) ) {
+					$json = file_get_contents( $manifest_path );
+					$manifest = json_decode( $json, true );
+
+					if ( json_last_error() !== JSON_ERROR_NONE ) {
+							// error_log( "[FNESL] Failed to parse manifest.json: " . json_last_error_msg() );
+							$manifest = [];
+					} else {
+							// error_log( "[FNESL] Loaded manifest with " . count( $manifest ) . " entries from {$manifest_path}" );
+					}
+			} else {
+					// error_log( "[FNESL] Manifest not found at {$manifest_path}" );
+					$manifest = [];
+			}
+	}
+
+	if ( ! isset( $manifest[ $entry ] ) ) {
+			// error_log( "[FNESL] Manifest entry '{$entry}' not found" );
+	} else {
+			// error_log( "[FNESL] Found manifest entry '{$entry}': " . print_r( $manifest[ $entry ], true ) );
+	}
+
+	return $manifest[ $entry ] ?? null;
 }
+
+
 
 /**
  * Enqueues theme assets (CSS and JS) for the front-end.
@@ -39,21 +57,44 @@ function fnesl_get_manifest_entry($entry) {
  * @see wp_enqueue_style() Enqueues CSS files.
  * @see wp_enqueue_script() Enqueues JS files.
  */
-function fnesl_enqueue_assets() {
-    $dist_uri = get_stylesheet_directory_uri();
+function fnesl_theme_assets() {
+	$dist_uri = get_stylesheet_directory_uri() . '/assets';
 
-    // Front-end assets
-    $theme_entry = fnesl_get_manifest_entry('js/theme.entry.js');
-    if ($theme_entry) {
-        if (!empty($theme_entry['css'])) {
-            foreach ($theme_entry['css'] as $css_file) {
-                wp_enqueue_style('theme-style', $dist_uri . '/' . $css_file, [], null);
-            }
-        }
-        wp_enqueue_script('theme-main', $dist_uri . '/' . $theme_entry['file'], [], null, true);
-    }
+	$theme_entry = fnesl_get_manifest_entry( 'js/theme.entry.js' );
+	if ( $theme_entry ) {
+			// Enqueue CSS
+			if ( ! empty( $theme_entry['css'] ) ) {
+					foreach ( $theme_entry['css'] as $css_file ) {
+							// error_log( "[FNESL] Enqueuing theme CSS: {$css_file}" );
+							wp_enqueue_style(
+									'fnesl-theme-style',
+									$dist_uri . '/' . basename( $css_file ),
+									[],
+									null
+							);
+					}
+			} else {
+					// error_log( "[FNESL] No CSS found for js/theme.entry.js" );
+			}
+
+			// Enqueue JS
+			if ( ! empty( $theme_entry['file'] ) ) {
+					// error_log( "[FNESL] Enqueuing theme JS: {$theme_entry['file']}" );
+					wp_enqueue_script(
+							'fnesl-theme-script',
+							$dist_uri . '/' . basename( $theme_entry['file'] ),
+							[],
+							null,
+							true
+					);
+			} else {
+					// error_log( "[FNESL] No JS file found for js/theme.entry.js" );
+			}
+	} else {
+			// error_log( "[FNESL] Theme entry js/theme.entry.js not enqueued because manifest entry was missing" );
+	}
 }
-add_action('wp_enqueue_scripts', 'fnesl_enqueue_assets');
+add_action( 'wp_enqueue_scripts', 'fnesl_theme_assets' );
 
 /**
  * Enqueues custom editor assets (CSS and JS) for the block editor.

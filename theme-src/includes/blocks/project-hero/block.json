@@ -1,0 +1,30 @@
+{
+  "apiVersion": 3,
+  "name": "fnesl/project-hero",
+  "title": "Project Hero",
+  "category": "layout",
+  "icon": "format-image",
+  "description": "Hero block with background image or video support and fallback image.",
+  "supports": {
+    "align": ["full", "wide"],
+    "html": false
+  },
+  "attributes": {
+    "backgroundType": {
+      "type": "string",
+      "default": "image"
+    },
+    "backgroundImage": {
+      "type": "object"
+    },
+    "backgroundVideo": {
+      "type": "object"
+    },
+    "fallbackImage": {
+      "type": "object"
+    }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css"
+}

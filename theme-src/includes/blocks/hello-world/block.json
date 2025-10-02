@@ -1,0 +1,17 @@
+{
+  "apiVersion": 3,
+  "name": "fnesl/hello-world",
+  "title": "Hello World",
+  "category": "widgets",
+  "icon": "smiley",
+  "description": "A simple test block built with Rollup.",
+  "textdomain": "fnesl",
+  "editorScript": "file:./index.js",
+  "dependencies": [
+    "wp-blocks",
+    "wp-element",
+    "wp-i18n",
+    "wp-components",
+    "wp-block-editor"
+  ]
+}

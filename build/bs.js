@@ -19,6 +19,8 @@ bs.init({
     "../theme-dist/**/*.css",
     "../theme-dist/**/*.{jpg,jpeg,png,gif,webp,svg,html}",
   ],
+  reloadDelay: 500, // wait 500ms before reloading
+
   reloadDebounce: 500,
   injectChanges: false, // do full reload except CSS hot-injection
   open: false,
