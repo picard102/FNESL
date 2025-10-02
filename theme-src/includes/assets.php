@@ -17,7 +17,7 @@ function fnesl_get_manifest_entry( $entry ) {
 	static $manifest = null;
 
 	if ( $manifest === null ) {
-			$manifest_path = get_stylesheet_directory() . '/assets/.vite/manifest.json';
+			$manifest_path = get_stylesheet_directory() . '/.vite/manifest.json';
 
 			if ( file_exists( $manifest_path ) ) {
 					$json = file_get_contents( $manifest_path );

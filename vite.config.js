@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   base: "",
   build: {
-    outDir: path.resolve(__dirname, "theme-dist/assets"),
+    outDir: path.resolve(__dirname, "theme-dist"),
     emptyOutDir: true, // clean assets dir each build
     manifest: true,
     rollupOptions: {
