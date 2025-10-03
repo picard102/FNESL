@@ -4,34 +4,24 @@
   "settings": {
     "color": {
       "palette": [
-        {
-          "name": "Primary",
-          "slug": "primary",
-          "color": "#004080"
-        },
-        {
-          "name": "Secondary",
-          "slug": "secondary",
-          "color": "#e63946"
-        },
-        {
-          "name": "Neutral",
-          "slug": "neutral",
-          "color": "#f1f1f1"
-        }
+        { "slug": "primary",   "color": "var(--color-primary-500)",   "name": "Primary" },
+        { "slug": "secondary", "color": "var(--color-secondary-500)", "name": "Secondary" },
+        { "slug": "neutral",   "color": "var(--color-neutral-500)",   "name": "Neutral" },
+        { "slug": "background","color": "var(--color-neutral-50)",    "name": "Background" },
+        { "slug": "text",      "color": "var(--color-neutral-900)",   "name": "Text" }
       ]
     },
     "typography": {
       "fontFamilies": [
         {
-          "fontFamily": "system-ui, sans-serif",
-          "name": "System UI",
-          "slug": "system"
+          "fontFamily": "\"IBM Plex Sans\", ui-sans-serif, system-ui, sans-serif",
+          "name": "IBM Plex Sans",
+          "slug": "ibm-plex-sans"
         },
         {
-          "fontFamily": "'Merriweather', serif",
-          "name": "Merriweather",
-          "slug": "merriweather"
+          "fontFamily": "\"IBM Plex Serif\", ui-serif, Georgia, serif",
+          "name": "IBM Plex Serif",
+          "slug": "ibm-plex-serif"
         }
       ],
       "fontSizes": [
@@ -56,9 +46,36 @@
       "text": "#111111"
     },
     "typography": {
-      "fontFamily": "var(--wp--preset--font-family--system)",
+      "fontFamily": "var(--wp--preset--font-family--ibm-plex-sans)",
       "fontSize": "var(--wp--preset--font-size--medium)",
       "lineHeight": 1.6
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--ibm-plex-serif)"
+        }
+      },
+      "button": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--ibm-plex-sans)"
+        }
+      },
+      "quote": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--ibm-plex-serif)"
+        }
+      },
+      "pullquote": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--ibm-plex-serif)"
+        }
+      },
+      "code": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--monospace)"
+        }
+      }
     }
   },
   "customTemplates": [],

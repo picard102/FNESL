@@ -1,14 +1,40 @@
 @import "tailwindcss";
 
-
 .project-hero {
-  @apply relative w-full min-h-[400px] flex items-center justify-center bg-gray-200;
-
-  &__video {
-    @apply absolute inset-0 w-full h-full object-cover;
-  }
-
-  &__inner {
-    @apply relative z-10 text-white p-8;
-  }
+  @apply relative w-full min-h-[400px] flex items-center justify-center bg-[--color-primary-400] aspect-video overflow-hidden;
+  background-color: var(--color-primary-400)
 }
+
+.project-hero__media {
+  mask-image: linear-gradient(5deg, transparent, #000 40%);
+  opacity: 0.6;
+}
+
+.project-hero__inner {
+  @apply relative z-10 text-white p-8;
+}
+
+.project-hero__overlay {
+  @apply absolute inset-0 w-full h-full object-cover z-1;
+  pointer-events: none;
+
+  /* options */
+	--grid-size: 30px;
+	--grid-strength: 1px;
+	--grid-dash: 5px;
+  --grid-gap: 10px;
+	--grid-color: #fff;
+	--paper-color: #000;
+
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+   /* styling */
+  background-color: var(--paper-color);
+  background-size: var(--grid-gap) var(--grid-gap), var(--grid-size) var(--grid-size);
+  background-image:
+    linear-gradient(to bottom, transparent var(--grid-dash), var(--paper-color) var(--grid-dash)),
+    linear-gradient(to right, var(--grid-color) var(--grid-strength), transparent var(--grid-strength)),
+    linear-gradient(to right, transparent var(--grid-dash), var(--paper-color) var(--grid-dash)),
+    linear-gradient(to bottom, var(--grid-color) var(--grid-strength), transparent var(--grid-strength));
+}
+

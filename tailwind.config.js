@@ -1,12 +1,15 @@
 console.log("[Tailwind] Config loaded");
 
 export default {
-  content: ["../theme-src/**/*.{js,jsx,scss,php,html}"],
+  content: ["./theme-src/**/*.{js,jsx,scss,php,html}"],
   theme: {
-    extend: {},
-  },
-  experimental: {
-    applyComplexClasses: true, // 👈 allows @apply for things like bg-red-500
+
+      colors: {
+        primary: {
+          400: "#579fb8",
+        },
+      },
+
   },
   plugins: [
     function ({ addUtilities }) {

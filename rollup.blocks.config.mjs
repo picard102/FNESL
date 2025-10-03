@@ -47,8 +47,16 @@ function assetPhpPlugin() {
           ? options.file
           : path.resolve(options.dir, fileName);
 
+        // Use the mtime of the generated JS file as version
+        let version;
+        try {
+          const stats = fs.statSync(outFile);
+          version = stats.mtimeMs.toString().split(".")[0]; // integer timestamp
+        } catch (e) {
+          version = Date.now().toString();
+        }
+
         const assetPath = outFile.replace(/\.js$/, ".asset.php");
-        const version = Date.now();
         const content = `<?php return array(
   'dependencies' => array(
     'wp-blocks',
@@ -62,7 +70,7 @@ function assetPhpPlugin() {
 
         fs.mkdirSync(path.dirname(assetPath), { recursive: true });
         fs.writeFileSync(assetPath, content, "utf8");
-        console.log(`📝 Wrote asset file: ${assetPath}`);
+        console.log(`📝 Wrote asset file: ${assetPath} (version ${version})`);
       }
     },
   };

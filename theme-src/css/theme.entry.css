@@ -1,26 +1,39 @@
 /* Tailwind v4 recommended: one import */
 @import "tailwindcss";
+/* Import weights you actually need */
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/700.css";
 
+@import "@fontsource/ibm-plex-serif/400.css";
+@import "@fontsource/ibm-plex-serif/500.css";
+@import "@fontsource/ibm-plex-serif/700.css";
+@theme {
+
+  --font-sans: var(--wp--preset--font-family--ibm-plex-sans);
+  --font-serif: var(--wp--preset--font-family--ibm-plex-serif);
+
+  --color-primary-50: #f1f9fa;
+  --color-primary-100: #dbedf2;
+  --color-primary-200: #bcdce5;
+  --color-primary-300: #8dc2d3;
+  --color-primary-400: #579fb8;
+  --color-primary-500: #3c849e;
+  --color-primary-600: #356c85;
+  --color-primary-700: #30596e;
+  --color-primary-800: #2e4b5c;
+  --color-primary-900: #2a404f;
+  --color-primary-950: #182834;
+
+}
 /* Your global theme styles can @apply utilities */
-:root { /* design tokens if you want */ }
+:root {
+  --font-sans: var(--wp--preset--font-family--ibm-plex-sans);
+  --font-serif: var(--wp--preset--font-family--ibm-plex-serif);
+
+
+}
 
 body {
-  @apply relative bg-red-500 text-gray-900;
-}
-
-/* simple sanity check */
-.test-debug {
-  @apply p-4 text-center bg-gray-200;
-}
-
-.project-hero {
-  @apply relative flex items-center justify-center min-h-[400px];
-
-  &__inner {
-    @apply relative z-10 text-white p-8;
-  }
-
-  &__video {
-    @apply absolute inset-0 w-full h-full object-cover;
-  }
+  @apply relative bg-slate-50 text-gray-900;
 }

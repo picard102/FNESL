@@ -22,9 +22,11 @@
     },
     "fallbackImage": {
       "type": "object"
-    }
+    },
+    "blurLevel": { "type": "number", "default": 1 },
+    "showOverlay": { "type": "boolean", "default": true }
   },
   "editorScript": "file:./index.js",
-  "style": "file:./style.css",
+  "style": "file:./index.css",
   "editorStyle": "file:./editor.css"
 }
