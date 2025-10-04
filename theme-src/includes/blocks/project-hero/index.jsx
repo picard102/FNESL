@@ -34,8 +34,9 @@ registerBlockType("fnesl/project-hero", {
 
     const [videoReady, setVideoReady] = useState(false);
 
+    // Outer wrapper (full width)
     const blockProps = useBlockProps({
-      className: "project-hero",
+      className: "project-hero alignfull",
     });
 
     // Blur levels
@@ -187,8 +188,8 @@ registerBlockType("fnesl/project-hero", {
           </PanelBody>
         </InspectorControls>
 
+        {/* Front-end layout */}
         <div {...blockProps}>
-          {/* Media */}
           <div className={`project-hero__media ${blurClass}`}>
             {backgroundType === "video" && backgroundVideo?.url && (
               <>
@@ -223,8 +224,11 @@ registerBlockType("fnesl/project-hero", {
             )}
           </div>
 
-          {/* Content alignment wrapper */}
-          <div className={`project-hero__inner container ${alignClass}`}>
+          {/* Inner constrained content */}
+          <div
+            className={`project-hero__inner ${alignClass}`}
+            data-wp-layout="constrained"
+          >
             <InnerBlocks renderAppender={InnerBlocks.ButtonBlockAppender} />
           </div>
 
@@ -246,7 +250,7 @@ registerBlockType("fnesl/project-hero", {
     } = attributes;
 
     const blockProps = useBlockProps.save({
-      className: "project-hero",
+      className: "project-hero alignfull",
     });
 
     const blurClass =
@@ -284,7 +288,6 @@ registerBlockType("fnesl/project-hero", {
               >
                 <source src={backgroundVideo.url} type={backgroundVideo.mime} />
               </video>
-              {/* Inline script to fade video in */}
               <script
                 dangerouslySetInnerHTML={{
                   __html: `
@@ -310,8 +313,11 @@ registerBlockType("fnesl/project-hero", {
           )}
         </div>
 
-        {/* Content alignment wrapper */}
-        <div className={`project-hero__inner container ${alignClass}`}>
+        {/* Inner constrained content */}
+        <div
+          className={`project-hero__inner ${alignClass}`}
+          data-wp-layout="constrained"
+        >
           <InnerBlocks.Content />
         </div>
 

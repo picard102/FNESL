@@ -1,16 +1,34 @@
 {
   "$schema": "https://schemas.wp.org/trunk/theme.json",
   "version": 2,
+  "supports": {
+    "align": ["wide", "full"]
+  },
   "settings": {
+    "customLineHeight": true,
+    "fluid": true,
+    "layout": {
+      "contentSize": "800px",
+      "wideSize": "1200px",
+      "allowEditing": true
+    },
+
     "color": {
       "palette": [
         { "slug": "primary", "color": "#356c85", "name": "Primary" },
         { "slug": "primary-200", "color": "#bcdce5", "name": "Primary 200" },
         { "slug": "primary-700", "color": "#30596e", "name": "Primary 700" },
         { "slug": "secondary", "color": "#A01D2A", "name": "Secondary" },
-        { "slug": "secondary-200", "color": "#f4858b", "name": "Secondary 200" },
-        { "slug": "secondary-700", "color": "#6e111a", "name": "Secondary 700" },
-
+        {
+          "slug": "secondary-200",
+          "color": "#f4858b",
+          "name": "Secondary 200"
+        },
+        {
+          "slug": "secondary-700",
+          "color": "#6e111a",
+          "name": "Secondary 700"
+        },
         { "slug": "accent", "color": "#f0972d", "name": "Accent" },
         { "slug": "accent-200", "color": "#ffd39e", "name": "Accent 200" },
         { "slug": "accent-700", "color": "#b86400", "name": "Accent 700" },
@@ -24,18 +42,11 @@
           "color": "var(--color-neutral-100)",
           "name": "White"
         },
-        {
-          "slug": "neutral",
-          "color": "#dddbcb",
-          "name": "Neutral"
-        },
-        {
-          "slug": "background",
-          "color": "#F4F4F9",
-          "name": "Background"
-        }
+        { "slug": "neutral", "color": "#dddbcb", "name": "Neutral" },
+        { "slug": "background", "color": "#F4F4F9", "name": "Background" }
       ]
     },
+
     "typography": {
       "fontFamilies": [
         {
@@ -50,12 +61,94 @@
         }
       ],
       "fontSizes": [
-        { "slug": "small", "name": "Small", "size": "14px" },
-        { "slug": "medium", "name": "Medium", "size": "18px" },
-        { "slug": "large", "name": "Large", "size": "24px" },
-        { "slug": "x-large", "name": "X-Large", "size": "32px" }
+        {
+          "slug": "xs",
+          "name": "Extra Small",
+          "size": "0.75rem",
+          "fluid": { "min": "0.7rem", "max": "0.8rem" }
+        },
+        {
+          "slug": "sm",
+          "name": "Small",
+          "size": "0.875rem",
+          "fluid": { "min": "0.75rem", "max": "1rem" }
+        },
+        {
+          "slug": "base",
+          "name": "Base",
+          "size": "1rem",
+          "fluid": { "min": "0.85rem", "max": "1.125rem" }
+        },
+        {
+          "slug": "lg",
+          "name": "Large",
+          "size": "1.125rem",
+          "fluid": { "min": "0.9rem", "max": "1.25rem" }
+        },
+        {
+          "slug": "xl",
+          "name": "XL",
+          "size": "1.25rem",
+          "fluid": { "min": "1rem", "max": "1.5rem" }
+        },
+        {
+          "slug": "2xl",
+          "name": "2XL",
+          "size": "1.5rem",
+          "fluid": { "min": "1.1rem", "max": "1.875rem" }
+        },
+        {
+          "slug": "3xl",
+          "name": "3XL",
+          "size": "1.875rem",
+          "fluid": { "min": "1.25rem", "max": "2.25rem" }
+        },
+        {
+          "slug": "4xl",
+          "name": "4XL",
+          "size": "2.25rem",
+          "fluid": { "min": "1.4rem", "max": "3rem" }
+        },
+        {
+          "slug": "5xl",
+          "name": "5XL",
+          "size": "3rem",
+          "fluid": { "min": "1.6rem", "max": "3.75rem" }
+        },
+        {
+          "slug": "6xl",
+          "name": "6XL",
+          "size": "3.75rem",
+          "fluid": { "min": "1.8rem", "max": "4.5rem" }
+        },
+        {
+          "slug": "7xl",
+          "name": "7XL",
+          "size": "4.5rem",
+          "fluid": { "min": "2rem", "max": "6rem" }
+        },
+        {
+          "slug": "8xl",
+          "name": "8XL",
+          "size": "6rem",
+          "fluid": { "min": "2.25rem", "max": "7.5rem" }
+        },
+        {
+          "slug": "9xl",
+          "name": "9XL",
+          "size": "8rem",
+          "fluid": { "min": "2.5rem", "max": "9rem" }
+        }
+      ],
+      "lineHeights": [
+        { "slug": "tight", "name": "Tight", "size": "1" },
+        { "slug": "snug", "name": "Snug", "size": "1.25" },
+        { "slug": "normal", "name": "Normal", "size": "1.5" },
+        { "slug": "relaxed", "name": "Relaxed", "size": "1.75" },
+        { "slug": "loose", "name": "Loose", "size": "2" }
       ]
     },
+
     "spacing": {
       "units": ["px", "em", "rem", "%", "vh", "vw"],
       "spacingSizes": [
@@ -63,8 +156,24 @@
         { "slug": "medium", "name": "Medium", "size": "16px" },
         { "slug": "large", "name": "Large", "size": "32px" }
       ]
+    },
+
+    "blocks": {
+      "core/heading": {
+        "typography": {
+          "fontSize": true,
+          "lineHeight": true
+        }
+      },
+      "core/paragraph": {
+        "typography": {
+          "fontSize": true,
+          "lineHeight": true
+        }
+      }
     }
   },
+
   "styles": {
     "color": {
       "background": "#ffffff",
@@ -72,8 +181,8 @@
     },
     "typography": {
       "fontFamily": "var(--wp--preset--font-family--ibm-plex-sans)",
-      "fontSize": "var(--wp--preset--font-size--medium)",
-      "lineHeight": 1.6
+      "fontSize": "var(--wp--preset--font-size--base)",
+      "lineHeight": "1.6"
     },
     "elements": {
       "heading": {
@@ -103,6 +212,7 @@
       }
     }
   },
+
   "customTemplates": [],
   "templateParts": []
 }

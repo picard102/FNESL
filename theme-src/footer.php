@@ -13,7 +13,7 @@
 	</svg>
 </a>
 
-<svg class=" aspect-[5/1]  w-full container fill-ghost  col-start-1 col-end-1 row-start-1 row-end-1 -mt-1" aria-hidden="true">
+<svg class=" aspect-[5/1]  w-full container fill-ghost  col-start-1 col-end-1 row-start-1 row-end-1 -mt-2" aria-hidden="true">
 	<use xlink:href="#footer"></use>
 	</svg>
 </div>
