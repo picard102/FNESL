@@ -46,7 +46,38 @@ add_action('init', function () {
         'menu_icon'          => 'dashicons-portfolio',
         'supports'           => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
         'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
+				'show_in_nav_menus'  => true,
     ];
 
     register_post_type('project', $args);
+});
+
+
+// Register Expertise Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Expertise', 'fnesl'),
+        'singular_name'     => __('Expertise', 'fnesl'),
+        'search_items'      => __('Search Expertise', 'fnesl'),
+        'all_items'         => __('All Expertise', 'fnesl'),
+        'parent_item'       => __('Parent Expertise', 'fnesl'),
+        'parent_item_colon' => __('Parent Expertise:', 'fnesl'),
+        'edit_item'         => __('Edit Expertise', 'fnesl'),
+        'update_item'       => __('Update Expertise', 'fnesl'),
+        'add_new_item'      => __('Add New Expertise', 'fnesl'),
+        'new_item_name'     => __('New Expertise Name', 'fnesl'),
+        'menu_name'         => __('Expertise', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => true, // acts like categories (true) vs tags (false)
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'expertise'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('expertise', ['project'], $args);
 });

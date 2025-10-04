@@ -5,6 +5,7 @@ import {
   MediaUploadCheck,
   useBlockProps,
   InnerBlocks,
+  BlockControls,
 } from "@wordpress/block-editor";
 import { __ } from "@wordpress/i18n";
 import {
@@ -12,6 +13,8 @@ import {
   Button,
   SelectControl,
   ToggleControl,
+  ToolbarGroup,
+  ToolbarButton,
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
 
@@ -26,20 +29,54 @@ registerBlockType("fnesl/project-hero", {
       fallbackImage,
       blurLevel,
       showOverlay,
+      verticalAlign,
     } = attributes;
 
     const [videoReady, setVideoReady] = useState(false);
 
     const blockProps = useBlockProps({
-      className: "project-hero relative w-full aspect-video overflow-hidden",
+      className: "project-hero",
     });
 
-    // Map blur levels to Tailwind classes
+    // Blur levels
     const blurClass =
-      blurLevel === 0 ? "blur-none" : blurLevel === 1 ? "blur-xs" : "blur-sm"; // none / medium / strong
+      blurLevel === 0 ? "blur-none" : blurLevel === 1 ? "blur-xs" : "blur-sm";
+
+    // Vertical alignment
+    const alignClass =
+      verticalAlign === "top"
+        ? "is-align-top"
+        : verticalAlign === "bottom"
+        ? "is-align-bottom"
+        : "is-align-center";
 
     return (
       <>
+        {/* Toolbar for alignment */}
+        <BlockControls>
+          <ToolbarGroup>
+            <ToolbarButton
+              icon="arrow-up-alt2"
+              label={__("Align Top", "fnesl")}
+              isPressed={verticalAlign === "top"}
+              onClick={() => setAttributes({ verticalAlign: "top" })}
+            />
+            <ToolbarButton
+              icon="minus"
+              label={__("Align Center", "fnesl")}
+              isPressed={verticalAlign === "center"}
+              onClick={() => setAttributes({ verticalAlign: "center" })}
+            />
+            <ToolbarButton
+              icon="arrow-down-alt2"
+              label={__("Align Bottom", "fnesl")}
+              isPressed={verticalAlign === "bottom"}
+              onClick={() => setAttributes({ verticalAlign: "bottom" })}
+            />
+          </ToolbarGroup>
+        </BlockControls>
+
+        {/* Sidebar settings */}
         <InspectorControls>
           <PanelBody title={__("Background Settings", "fnesl")}>
             <SelectControl
@@ -151,23 +188,18 @@ registerBlockType("fnesl/project-hero", {
         </InspectorControls>
 
         <div {...blockProps}>
-          {/* Media wrapper */}
-          <div className={`project-hero__media absolute -inset-2 pointer-events-none  ${blurClass}`}>
+          {/* Media */}
+          <div className={`project-hero__media ${blurClass}`}>
             {backgroundType === "video" && backgroundVideo?.url && (
               <>
-                {/* Fallback image */}
                 {fallbackImage?.url && (
                   <img
                     src={fallbackImage.url}
                     alt=""
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                      videoReady ? "opacity-0" : "opacity-100"
-                    }`}
+                    className={videoReady ? "opacity-0" : "opacity-100"}
                     aria-hidden="true"
                   />
                 )}
-
-                {/* Video */}
                 <video
                   key={backgroundVideo.id}
                   autoPlay
@@ -175,9 +207,7 @@ registerBlockType("fnesl/project-hero", {
                   loop
                   playsInline
                   poster={fallbackImage?.url || ""}
-                  className={`project-hero__video absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                    videoReady ? "opacity-100" : "opacity-0"
-                  }`}
+                  className={videoReady ? "opacity-100" : "opacity-0"}
                   onCanPlay={() => setVideoReady(true)}
                 >
                   <source
@@ -189,17 +219,15 @@ registerBlockType("fnesl/project-hero", {
             )}
 
             {backgroundType === "image" && backgroundImage?.url && (
-              <img
-                src={backgroundImage.url}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+              <img src={backgroundImage.url} alt="" />
             )}
           </div>
 
-          <div className="relative z-20 text-white p-8">
-            <InnerBlocks />
+          {/* Content alignment wrapper */}
+          <div className={`project-hero__inner container ${alignClass}`}>
+            <InnerBlocks renderAppender={InnerBlocks.ButtonBlockAppender} />
           </div>
+
           {showOverlay && <div className="project-hero__overlay"></div>}
         </div>
       </>
@@ -214,27 +242,33 @@ registerBlockType("fnesl/project-hero", {
       fallbackImage,
       blurLevel,
       showOverlay,
+      verticalAlign,
     } = attributes;
 
     const blockProps = useBlockProps.save({
-      className: "project-hero relative w-full aspect-video overflow-hidden",
+      className: "project-hero",
     });
 
-    // Use same blurClass logic on frontend
     const blurClass =
       blurLevel === 0 ? "blur-none" : blurLevel === 1 ? "blur-xs" : "blur-sm";
 
+    const alignClass =
+      verticalAlign === "top"
+        ? "is-align-top"
+        : verticalAlign === "bottom"
+        ? "is-align-bottom"
+        : "is-align-center";
+
     return (
       <div {...blockProps}>
-        {/* Media wrapper */}
-        <div className={`project-hero__media absolute -inset-2 pointer-events-none  ${blurClass}`}>
+        <div className={`project-hero__media ${blurClass}`}>
           {backgroundType === "video" && backgroundVideo?.url ? (
             <>
               {fallbackImage?.url && (
                 <img
                   src={fallbackImage.url}
                   alt=""
-                  className="absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-700"
+                  className="opacity-100"
                   data-fallback
                   aria-hidden="true"
                 />
@@ -245,11 +279,12 @@ registerBlockType("fnesl/project-hero", {
                 loop
                 playsInline
                 poster={fallbackImage?.url || ""}
-                className="project-hero__video absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-700"
+                className="opacity-0"
                 data-video
               >
                 <source src={backgroundVideo.url} type={backgroundVideo.mime} />
               </video>
+              {/* Inline script to fade video in */}
               <script
                 dangerouslySetInnerHTML={{
                   __html: `
@@ -271,17 +306,15 @@ registerBlockType("fnesl/project-hero", {
           ) : null}
 
           {backgroundType === "image" && backgroundImage?.url && (
-            <img
-              src={backgroundImage.url}
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            <img src={backgroundImage.url} alt="" />
           )}
         </div>
 
-        <div className="relative z-20 text-white p-8">
+        {/* Content alignment wrapper */}
+        <div className={`project-hero__inner container ${alignClass}`}>
           <InnerBlocks.Content />
         </div>
+
         {showOverlay && <div className="project-hero__overlay"></div>}
       </div>
     );

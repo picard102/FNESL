@@ -4,11 +4,36 @@
   "settings": {
     "color": {
       "palette": [
-        { "slug": "primary",   "color": "var(--color-primary-500)",   "name": "Primary" },
-        { "slug": "secondary", "color": "var(--color-secondary-500)", "name": "Secondary" },
-        { "slug": "neutral",   "color": "var(--color-neutral-500)",   "name": "Neutral" },
-        { "slug": "background","color": "var(--color-neutral-50)",    "name": "Background" },
-        { "slug": "text",      "color": "var(--color-neutral-900)",   "name": "Text" }
+        { "slug": "primary", "color": "#356c85", "name": "Primary" },
+        { "slug": "primary-200", "color": "#bcdce5", "name": "Primary 200" },
+        { "slug": "primary-700", "color": "#30596e", "name": "Primary 700" },
+        { "slug": "secondary", "color": "#A01D2A", "name": "Secondary" },
+        { "slug": "secondary-200", "color": "#f4858b", "name": "Secondary 200" },
+        { "slug": "secondary-700", "color": "#6e111a", "name": "Secondary 700" },
+
+        { "slug": "accent", "color": "#f0972d", "name": "Accent" },
+        { "slug": "accent-200", "color": "#ffd39e", "name": "Accent 200" },
+        { "slug": "accent-700", "color": "#b86400", "name": "Accent 700" },
+        {
+          "slug": "black",
+          "color": "var(--color-neutral-900)",
+          "name": "Black"
+        },
+        {
+          "slug": "white",
+          "color": "var(--color-neutral-100)",
+          "name": "White"
+        },
+        {
+          "slug": "neutral",
+          "color": "#dddbcb",
+          "name": "Neutral"
+        },
+        {
+          "slug": "background",
+          "color": "#F4F4F9",
+          "name": "Background"
+        }
       ]
     },
     "typography": {

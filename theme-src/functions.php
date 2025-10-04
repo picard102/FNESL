@@ -76,3 +76,27 @@ add_action( 'enqueue_block_editor_assets', function() {
         'wp.data.dispatch("core/editor").lockPostAutosaving();'
     );
 });
+
+
+function fneslsprite() {
+	$sprite_file = plugin_dir_path( __FILE__ ) . 'assets/sprite.svg';
+
+	if ( file_exists( $sprite_file ) ) {
+			echo '<div class="hidden" aria-hidden="true">';
+			// Output as plain text, not parsed as PHP
+			echo file_get_contents( $sprite_file );
+			echo '</div>';
+	}
+}
+add_action( 'wp_body_open', 'fneslsprite' );
+
+function fnesl_sprite_in_editor() {
+	$sprite_file = get_template_directory() . '/assets/sprite.svg'; // adjust path
+
+	if ( file_exists( $sprite_file ) ) {
+			echo '<div class="hidden" aria-hidden="true">';
+			echo file_get_contents( $sprite_file );
+			echo '</div>';
+	}
+}
+add_action( 'admin_footer', 'fnesl_sprite_in_editor' ); // runs inside block editor iframe

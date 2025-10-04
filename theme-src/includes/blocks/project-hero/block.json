@@ -24,9 +24,13 @@
       "type": "object"
     },
     "blurLevel": { "type": "number", "default": 1 },
-    "showOverlay": { "type": "boolean", "default": true }
+    "showOverlay": { "type": "boolean", "default": true },
+    "verticalAlign": {
+      "type": "string",
+      "default": "bottom"
+    }
   },
   "editorScript": "file:./index.js",
-  "style": "file:./index.css",
-  "editorStyle": "file:./editor.css"
+  "viewStyle": "file:./index.css",
+  "editorStyle": "file:./index.css"
 }

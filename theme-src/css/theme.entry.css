@@ -8,10 +8,12 @@
 @import "@fontsource/ibm-plex-serif/400.css";
 @import "@fontsource/ibm-plex-serif/500.css";
 @import "@fontsource/ibm-plex-serif/700.css";
+
 @theme {
 
   --font-sans: var(--wp--preset--font-family--ibm-plex-sans);
   --font-serif: var(--wp--preset--font-family--ibm-plex-serif);
+
 
   --color-primary-50: #f1f9fa;
   --color-primary-100: #dbedf2;
@@ -25,6 +27,46 @@
   --color-primary-900: #2a404f;
   --color-primary-950: #182834;
 
+  --color-secondary-50: #f9c9ca;
+  --color-secondary-100: #f7b2b5;
+  --color-secondary-200: #f4858b;
+  --color-secondary-300: #f24d59;
+  --color-secondary-400: #d02939;
+  --color-secondary-500: #a01d2a;
+  --color-secondary-600: #871722;
+  --color-secondary-700: #6e111a;
+  --color-secondary-800: #570b12;
+  --color-secondary-900: #40060b;
+  --color-secondary-950: #360408;
+
+  --color-bone-50: #f8f7ef;
+  --color-bone-100: #f5f4ea;
+  --color-bone-200: #f0eede;
+  --color-bone-300: #ebe9d8;
+  --color-bone-400: #e2e0d0;
+  --color-bone-500: #dddbcb;
+  --color-bone-600: #b3b1a4;
+  --color-bone-700: #8d8c81;
+  --color-bone-800: #67665e;
+  --color-bone-900: #43423d;
+  --color-bone-950: #31302c;
+
+
+  --color-accent-50: #ffefdb;
+  --color-accent-100: #ffe5c7;
+  --color-accent-200: #ffd39e;
+  --color-accent-300: #ffbe70;
+  --color-accent-400: #ffab47;
+  --color-accent-500: #f0972d;
+  --color-accent-600: #eb8000;
+  --color-accent-700: #b86400;
+  --color-accent-800: #854800;
+  --color-accent-900: #522c00;
+  --color-accent-950: #381e00;
+
+
+  --color-ghost: #F4F4F9;
+
 }
 /* Your global theme styles can @apply utilities */
 :root {
@@ -35,5 +77,5 @@
 }
 
 body {
-  @apply relative bg-slate-50 text-gray-900;
+  @apply relative bg-ghost text-slate-900;
 }

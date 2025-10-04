@@ -63,6 +63,7 @@ function assetPhpPlugin() {
     'wp-element',
     'wp-i18n',
     'wp-components',
+    'wp-data',
     'wp-block-editor'
   ),
   'version' => '${version}',
@@ -103,6 +104,7 @@ export default () => {
           "@wordpress/components": "wp.components",
           "@wordpress/block-editor": "wp.blockEditor",
           "@wordpress/i18n": "wp.i18n",
+          "@wordpress/data": "wp.data",
         },
       },
       external: wpExternals,
