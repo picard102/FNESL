@@ -19,15 +19,16 @@ function fnesl_get_manifest_entry( $entry ) {
 	if ( $manifest === null ) {
 			$manifest_path = get_stylesheet_directory() . '/.vite/manifest.json';
 
+
 			if ( file_exists( $manifest_path ) ) {
 					$json = file_get_contents( $manifest_path );
 					$manifest = json_decode( $json, true );
 
 					if ( json_last_error() !== JSON_ERROR_NONE ) {
-							// error_log( "[FNESL] Failed to parse manifest.json: " . json_last_error_msg() );
+							//error_log( "[FNESL] Failed to parse manifest.json: " . json_last_error_msg() );
 							$manifest = [];
 					} else {
-							// error_log( "[FNESL] Loaded manifest with " . count( $manifest ) . " entries from {$manifest_path}" );
+							//error_log( "[FNESL] Loaded manifest with " . count( $manifest ) . " entries from {$manifest_path}" );
 					}
 			} else {
 					// error_log( "[FNESL] Manifest not found at {$manifest_path}" );
@@ -147,3 +148,44 @@ function fnesl_browsersync() {
 }
 add_action('wp_enqueue_scripts', 'fnesl_browsersync');
 add_action( 'admin_enqueue_scripts', 'fnesl_browsersync' );
+
+
+
+function fnesl_enqueue_manifest_css( $entry, $handle ) {
+	$dist_uri = get_stylesheet_directory_uri() . '/assets';
+	$manifest_entry = fnesl_get_manifest_entry( $entry );
+
+	if ( $manifest_entry && ! empty( $manifest_entry['file'] ) ) {
+		wp_enqueue_style(
+			$handle,
+			$dist_uri . '/' . basename( $manifest_entry['file'] ),
+			[],
+			null
+		);
+	}
+}
+
+add_action( 'render_block', function( $block_content, $block ) {
+	if (
+		$block['blockName'] === 'core/template-part'
+		&& ( $block['attrs']['slug'] ?? '' ) === 'banner'
+	) {
+		error_log( "[FNESL] Enqueuing banner styles for template part 'banner'" );
+		fnesl_enqueue_manifest_css( 'css/banner.entry.css', 'fnesl-banner-style' );
+	}
+	return $block_content;
+}, 10, 2 );
+
+
+add_action( 'enqueue_block_editor_assets', function() {
+	fnesl_enqueue_manifest_css( 'css/banner.entry.css', 'fnesl-banner-editor' );
+});
+
+
+add_action('after_setup_theme', function() {
+  add_theme_support('editor-styles');
+  $banner_entry = fnesl_get_manifest_entry('css/banner.entry.css');
+  if ($banner_entry) {
+    add_editor_style('assets/' . basename($banner_entry['file']));
+  }
+});

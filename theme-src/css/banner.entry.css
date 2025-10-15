@@ -1,0 +1,36 @@
+
+/* Hide by default in the editor */
+.editor-styles-wrapper .site-banner::before,
+.editor-styles-wrapper .site-banner::after {
+  content: none !important;
+}
+
+/* Decorative blobs (front-end only) */
+.site-banner::before,
+.site-banner::after {
+  position: absolute;
+  content: "";
+  top: 50%;
+  width: 36rem;
+  aspect-ratio: 577 / 310;
+  opacity: 0.4;
+  filter: blur(40px);
+  transform: translateY(-50%);
+  z-index: 0;
+  background: linear-gradient(to right, #ff80b5, #9089fc);
+  clip-path: polygon(
+    74.8% 41.9%, 97.2% 73.2%, 100% 34.9%,
+    92.5% 0.4%, 87.5% 0%, 75% 28.6%,
+    58.5% 54.6%, 50.1% 56.8%, 46.9% 44%,
+    48.3% 17.4%, 24.7% 53.9%, 0% 27.9%,
+    11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%
+  );
+}
+
+.site-banner::before {
+  left: max(-7rem, calc(50% - 52rem));
+}
+
+.site-banner::after {
+  left: max(45rem, calc(50% + 8rem));
+}

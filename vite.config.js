@@ -23,6 +23,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         theme: path.resolve(__dirname, "theme-src/js/theme.entry.js"),
+        banner: path.resolve(__dirname, "theme-src/css/banner.entry.css"),
       },
     },
   },

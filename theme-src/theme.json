@@ -190,6 +190,16 @@
           "fontFamily": "var(--wp--preset--font-family--ibm-plex-serif)"
         }
       },
+      "link": {
+        "typography": {
+            "textDecoration": "none"
+        },
+        ":hover": {
+            "typography": {
+                "textDecoration": "underline"
+            }
+        }
+    },
       "button": {
         "typography": {
           "fontFamily": "var(--wp--preset--font-family--ibm-plex-sans)"

@@ -1,0 +1,50 @@
+.project-hero-v2 {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  overflow: hidden;
+}
+.project-hero-v2 img,
+.project-hero-v2 video {
+  transition: opacity 0.5s ease;
+}
+.project-hero__inner {
+  position: relative;
+  z-index: 10;
+}
+.expertise-label svg {
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
+  fill: currentColor;
+}
+
+
+
+/* Overlay */
+.project-hero__overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+
+  --grid-size: 30px;
+  --grid-strength: 1px;
+  --grid-dash: 5px;
+  --grid-gap: 10px;
+  --grid-color: #fff;
+  --paper-color: #000;
+
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+
+  background-color: var(--paper-color);
+  background-size: var(--grid-gap) var(--grid-gap), var(--grid-size) var(--grid-size);
+  background-image:
+    linear-gradient(to bottom, transparent var(--grid-dash), var(--paper-color) var(--grid-dash)),
+    linear-gradient(to right, var(--grid-color) var(--grid-strength), transparent var(--grid-strength)),
+    linear-gradient(to right, transparent var(--grid-dash), var(--paper-color) var(--grid-dash)),
+    linear-gradient(to bottom, var(--grid-color) var(--grid-strength), transparent var(--grid-strength));
+}

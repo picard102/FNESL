@@ -89,3 +89,206 @@
 body {
   @apply relative bg-ghost text-slate-900;
 }
+
+
+.test,
+.test * {
+  outline: 1px solid hsl(72, 90%, 50%);
+}
+
+/* ==========================================================================
+   WordPress Core Block Layout Support
+   ========================================================================== */
+
+/* Root container for site content */
+.wp-site-blocks {
+  display: block;
+}
+
+/* Default content width constraint */
+.wp-site-blocks > * {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--wp--style--global--content-size);
+  box-sizing: border-box;
+}
+
+/* Wide alignment */
+.alignwide,
+.wp-site-blocks .alignwide,
+.wp-block-group.alignwide {
+  max-width: var(--wp--style--global--wide-size);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Full-width alignment */
+.alignfull,
+.wp-site-blocks .alignfull,
+.wp-block-group.alignfull {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Block Containers & Layouts
+   ========================================================================== */
+
+.wp-block {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* Block Groups (common wrapper block) */
+.wp-block-group {
+  box-sizing: border-box;
+  margin-block-start: var(--wp--preset--spacing--medium, 1.5rem);
+  margin-block-end: var(--wp--preset--spacing--medium, 1.5rem);
+}
+
+.wp-block-group.alignwide,
+.wp-block-group.alignfull {
+  margin-inline: auto;
+}
+
+/* Constrained layout wrapper */
+.is-layout-constrained {
+  max-width: var(--wp--style--global--content-size);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Flow layout wrapper */
+.is-layout-flow {
+  display: flow-root;
+  box-sizing: border-box;
+}
+
+/* Flex and Grid layout containers (wp-container-*) */
+[class*="wp-container-"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp--style--block-gap, 1.5rem);
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Common Block-Specific Defaults
+   ========================================================================== */
+
+/* Images */
+.wp-block-image img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+/* Cover block */
+.wp-block-cover {
+  position: relative;
+  color: inherit;
+  overflow: hidden;
+}
+
+.wp-block-cover__inner-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Columns */
+.wp-block-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp--style--block-gap, 2rem);
+  box-sizing: border-box;
+}
+
+/* Buttons */
+.wp-block-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--wp--style--block-gap, 1rem);
+}
+
+/* Quotes & Pullquotes */
+.wp-block-quote,
+.wp-block-pullquote {
+  margin: var(--wp--preset--spacing--medium, 1.5rem) auto;
+  padding-inline: var(--wp--preset--spacing--medium, 1.5rem);
+  box-sizing: border-box;
+}
+
+/* Tables */
+.wp-block-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.wp-block-table th,
+.wp-block-table td {
+  padding: 0.5em;
+  border: 1px solid currentColor;
+}
+
+/* Lists */
+.wp-block-list,
+ul.wp-block-list,
+ol.wp-block-list {
+  margin-block: var(--wp--preset--spacing--medium, 1.5rem);
+  padding-left: 1.5em;
+}
+
+/* Code blocks */
+.wp-block-code {
+  font-family: var(--wp--preset--font-family--monospace, monospace);
+  background: var(--wp--preset--color--neutral, #f4f4f4);
+  padding: 1em;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Utility Alignment and Reset
+   ========================================================================== */
+
+.aligncenter {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.alignleft {
+  float: left;
+  margin-right: 1.5em;
+}
+
+.alignright {
+  float: right;
+  margin-left: 1.5em;
+}
+
+.clearfix::after {
+  content: "";
+  display: table;
+  display: table;
+  clear: both;
+}
+
+
+
+.project-hero {
+  @apply relative w-full min-h-[400px] overflow-hidden bg-primary-700 text-white;
+}
+
+.project-layout {
+  @apply grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12;
+}
+
+.project-sidebar {
+  @apply text-sm text-primary-700 lg:sticky lg:top-8 self-start;
+}

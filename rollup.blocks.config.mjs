@@ -33,6 +33,8 @@ const wpExternals = [
   "wp-i18n",
   "wp-components",
   "wp-block-editor",
+  "wp-data",
+  "wp-core-data",
 ];
 
 // Generate asset.php alongside each block bundle
@@ -64,7 +66,8 @@ function assetPhpPlugin() {
     'wp-i18n',
     'wp-components',
     'wp-data',
-    'wp-block-editor'
+    'wp-block-editor',
+    'wp-core-data'
   ),
   'version' => '${version}',
 );`;
@@ -105,6 +108,7 @@ export default () => {
           "@wordpress/block-editor": "wp.blockEditor",
           "@wordpress/i18n": "wp.i18n",
           "@wordpress/data": "wp.data",
+          "@wordpress/core-data": "wp.coreData",
         },
       },
       external: wpExternals,
