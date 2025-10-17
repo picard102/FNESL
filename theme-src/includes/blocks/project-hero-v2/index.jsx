@@ -5,8 +5,8 @@ import {
   InspectorControls,
   MediaUpload,
   MediaUploadCheck,
-  InnerBlocks,
   PanelColorSettings,
+  useSetting,
 } from "@wordpress/block-editor";
 import {
   PanelBody,
@@ -16,34 +16,9 @@ import {
 } from "@wordpress/components";
 import { useEntityProp } from "@wordpress/core-data";
 import { useSelect } from "@wordpress/data";
+import { useEffect } from "@wordpress/element";
 
 registerBlockType("fnesl/project-hero-v2", {
-  title: __("Project Hero (v2)", "fnesl"),
-  description: __(
-    "Dynamic project hero with featured expertise, automatic title, and background image/video support.",
-    "fnesl"
-  ),
-  icon: "format-image",
-  category: "fnesl",
-  supports: { align: ["wide"] },
-
-  attributes: {
-    backgroundType: { type: "string", default: "image" },
-    backgroundImage: { type: "object" },
-    backgroundVideo: { type: "object" },
-    blurLevel: { type: "string", default: "xs" },
-    showOverlay: { type: "boolean", default: true },
-    verticalAlign: { type: "string", default: "bottom" },
-    titleSize: { type: "string", default: "4xl" },
-    textAlign: { type: "string", default: "left" },
-    selectedExpertise: { type: "integer", default: null },
-    backgroundColor: {
-      type: "string",
-      default: "var(--wp--preset--color--primary-500)",
-    },
-    textColor: { type: "string" },
-  },
-
   edit: ({ attributes, setAttributes }) => {
     const {
       backgroundType,
@@ -51,21 +26,18 @@ registerBlockType("fnesl/project-hero-v2", {
       backgroundVideo,
       blurLevel,
       showOverlay,
-      verticalAlign,
-      titleSize,
       textAlign,
       selectedExpertise,
       backgroundColor,
       textColor,
+      fontSize,
     } = attributes;
 
-    // dynamic project title
     const [title] =
       typeof useEntityProp === "function"
         ? useEntityProp("postType", "project", "title")
         : [""];
 
-    // get expertise taxonomy
     const terms = useSelect(
       (select) =>
         select("core").getEntityRecords("taxonomy", "expertise", {
@@ -81,32 +53,34 @@ registerBlockType("fnesl/project-hero-v2", {
         ]
       : [{ label: __("Loading…", "fnesl"), value: 0 }];
 
-    // helper for blur class
-    const blurClass =
-      blurLevel === "xs"
-        ? "fnesl-blur-xs"
-        : blurLevel === "sm"
-        ? "fnesl-blur-sm"
-        : "fnesl-blur-none";
+    // Auto-clear video when switching back to image mode
+    useEffect(() => {
+      if (backgroundType === "image" && backgroundVideo?.url) {
+        setAttributes({ backgroundVideo: null });
+      }
+    }, [backgroundType]);
 
-    // block props for editor selection and palette colors
+    const normalizeFontSlug = (slug) => slug.replace(/^(\d+)/, "$1-");
+
     const blockProps = useBlockProps({
-      className: `project-hero-editor has-${textAlign}-text alignwide`,
+      className: `project-hero-editor alignfull text-${textAlign}`,
       style: {
-        backgroundColor:
-          backgroundColor || "var(--wp--preset--color--primary-500)",
-        color: textColor || "inherit",
-        position: "relative",
-        overflow: "hidden",
+        backgroundColor: backgroundColor || "var(--wp--preset--color--primary)",
+        color: textColor || "var(--wp--preset--color--white)",
       },
     });
+
+    if (!fontSize) setAttributes({ fontSize: "xl" });
+
+    const fontSizes = useSetting("typography.fontSizes") || [];
 
     return (
       <>
         <InspectorControls>
-          {/* 🎨 Color Controls */}
+          {/* 🎨 Colors */}
           <PanelColorSettings
             title={__("Colors", "fnesl")}
+            initialOpen={false}
             colorSettings={[
               {
                 value: backgroundColor,
@@ -121,8 +95,26 @@ registerBlockType("fnesl/project-hero-v2", {
             ]}
           />
 
-          {/* 🖼 Background Media */}
-          <PanelBody title={__("Background Media", "fnesl")} initialOpen={true}>
+          {/* ✏️ Typography */}
+          <PanelBody title={__("Typography", "fnesl")} initialOpen={false}>
+            <SelectControl
+              label={__("Headline Size", "fnesl")}
+              value={fontSize}
+              options={fontSizes.map((f) => ({
+                label: f.name,
+                value: f.slug,
+              }))}
+              onChange={(newSlug) =>
+                setAttributes({ fontSize: newSlug || "xl" })
+              }
+            />
+          </PanelBody>
+
+          {/* 🖼 Background */}
+          <PanelBody
+            title={__("Background Media", "fnesl")}
+            initialOpen={false}
+          >
             <SelectControl
               label={__("Background Type", "fnesl")}
               value={backgroundType}
@@ -136,7 +128,6 @@ registerBlockType("fnesl/project-hero-v2", {
               onChange={(v) => setAttributes({ backgroundType: v })}
             />
 
-            {/* Always show image uploader */}
             <MediaUploadCheck>
               <MediaUpload
                 onSelect={(media) => setAttributes({ backgroundImage: media })}
@@ -153,11 +144,7 @@ registerBlockType("fnesl/project-hero-v2", {
                 <img
                   src={backgroundImage.url}
                   alt=""
-                  style={{
-                    width: "100%",
-                    marginTop: "10px",
-                    borderRadius: "4px",
-                  }}
+                  className="project-hero-editor__preview-image"
                 />
               )}
             </MediaUploadCheck>
@@ -170,7 +157,7 @@ registerBlockType("fnesl/project-hero-v2", {
                   }
                   allowedTypes={["video"]}
                   render={({ open }) => (
-                    <Button onClick={open} variant="secondary" className="mt-2">
+                    <Button onClick={open} variant="secondary">
                       {backgroundVideo?.url
                         ? __("Replace Video", "fnesl")
                         : __("Select Video", "fnesl")}
@@ -181,11 +168,7 @@ registerBlockType("fnesl/project-hero-v2", {
                   <video
                     src={backgroundVideo.url}
                     poster={backgroundImage?.url || ""}
-                    style={{
-                      width: "100%",
-                      marginTop: "10px",
-                      borderRadius: "4px",
-                    }}
+                    className="project-hero-editor__preview-video"
                     muted
                     autoPlay
                     loop
@@ -195,20 +178,8 @@ registerBlockType("fnesl/project-hero-v2", {
             )}
           </PanelBody>
 
-          {/* ⚙️ Layout Settings */}
+          {/* ⚙️ Layout */}
           <PanelBody title={__("Layout Settings", "fnesl")} initialOpen={false}>
-            <SelectControl
-              label={__("Vertical Align", "fnesl")}
-              value={verticalAlign}
-              options={[
-                { label: __("Top", "fnesl"), value: "top" },
-                { label: __("Center", "fnesl"), value: "center" },
-                { label: __("Bottom", "fnesl"), value: "bottom" },
-              ]}
-              onChange={(v) => setAttributes({ verticalAlign: v })}
-            />
-
-            {/* 👇 Blur selector */}
             <SelectControl
               label={__("Blur Level", "fnesl")}
               value={blurLevel}
@@ -224,31 +195,6 @@ registerBlockType("fnesl/project-hero-v2", {
               label={__("Show Overlay", "fnesl")}
               checked={showOverlay}
               onChange={(v) => setAttributes({ showOverlay: v })}
-            />
-          </PanelBody>
-
-          {/* ✏️ Headline */}
-          <PanelBody title={__("Headline", "fnesl")} initialOpen={false}>
-            <SelectControl
-              label={__("Text Alignment", "fnesl")}
-              value={textAlign}
-              options={[
-                { label: __("Left", "fnesl"), value: "left" },
-                { label: __("Center", "fnesl"), value: "center" },
-                { label: __("Right", "fnesl"), value: "right" },
-              ]}
-              onChange={(v) => setAttributes({ textAlign: v })}
-            />
-            <SelectControl
-              label={__("Headline Size", "fnesl")}
-              value={titleSize}
-              options={[
-                { label: "3XL", value: "3xl" },
-                { label: "4XL", value: "4xl" },
-                { label: "5XL", value: "5xl" },
-                { label: "6XL", value: "6xl" },
-              ]}
-              onChange={(v) => setAttributes({ titleSize: v })}
             />
           </PanelBody>
 
@@ -268,14 +214,15 @@ registerBlockType("fnesl/project-hero-v2", {
           </PanelBody>
         </InspectorControls>
 
-        {/* ✨ Block Preview */}
+        {/* ✨ Editor Preview */}
         <div {...blockProps}>
+
           {/* Background media */}
-          {backgroundVideo?.url ? (
+          {backgroundType === "video" && backgroundVideo?.url ? (
             <video
               src={backgroundVideo.url}
               poster={backgroundImage?.url || ""}
-              className={`absolute inset-0 object-cover w-full h-full opacity-40 ${blurClass}`}
+              className="project-hero-editor__media"
               muted
               autoPlay
               loop
@@ -284,47 +231,28 @@ registerBlockType("fnesl/project-hero-v2", {
             <img
               src={backgroundImage.url}
               alt=""
-              className={`absolute inset-0 object-cover w-full h-full opacity-40 ${blurClass}`}
+              className="project-hero-editor__media"
             />
           ) : null}
 
-          {/* Overlay */}
-          {showOverlay && (
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background:
-                  "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.45) 100%)",
-              }}
-            />
-          )}
-
           {/* Content */}
           <div
-            className={`relative z-10 alignwide flex flex-col justify-${verticalAlign} py-20`}
+            className={`project-hero-editor__inner has-text-align-${textAlign}`}
           >
-            <p className="text-sm opacity-80 mb-2">
-              {terms && selectedExpertise
-                ? terms.find((t) => t.id === selectedExpertise)?.name
+            <p className="project-hero-editor__expertise has-lg-font-size">
+              {selectedExpertise
+                ? terms?.find((t) => t.id === selectedExpertise)?.name
                 : __("Expertise: Auto", "fnesl")}
             </p>
 
-            <h1 className={`text-${titleSize} text-${textAlign}`}>
+            <h1 className={`has-${normalizeFontSlug(fontSize)}-font-size`}>
               {title || __("Project Title", "fnesl")}
             </h1>
-
-            {/* Inner blocks for user content */}
-            <div className="mt-6">
-              <InnerBlocks
-                templateLock={false}
-                renderAppender={InnerBlocks.ButtonBlockAppender}
-              />
-            </div>
           </div>
         </div>
       </>
     );
   },
 
-  save: () => <InnerBlocks.Content />,
+  save: () => null,
 });

@@ -17,7 +17,7 @@ if ( have_posts() ) :
 <main class="wp-site-blocks test">
   <?php
   // Optional top banner (block template part)
-  block_template_part( 'banner' );
+  //block_template_part( 'banner' );
 
   // --- FULL WIDTH HERO ---
   if ( $has_hero ) {
@@ -40,7 +40,7 @@ if ( have_posts() ) :
   ?>
 
   <!-- Two-column layout below hero -->
-  <div class="project-layout alignwide grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12">
+  <div class="project-layout alignwide grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12 px-6">
     <article class="project-content prose max-w-none">
       <?php
       // Render all blocks except the hero

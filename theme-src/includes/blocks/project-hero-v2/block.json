@@ -8,7 +8,12 @@
   "description": "Dynamic project hero with featured expertise, automatic title, and background image/video support.",
   "supports": {
     "align": ["full"],
-    "html": false
+    "html": false,
+
+    "color": {
+      "text": true,
+      "background": true
+    }
   },
   "attributes": {
     "backgroundType": { "type": "string", "default": "image" },
@@ -17,11 +22,13 @@
     "blurLevel": { "type": "string", "default": "xs" },
     "showOverlay": { "type": "boolean", "default": true },
     "verticalAlign": { "type": "string", "default": "bottom" },
-    "titleSize": { "type": "string", "default": "4xl" },
     "textAlign": { "type": "string", "default": "left" },
+    "fontSize": { "type": "string", "default": "2xl" },
+
     "selectedExpertise": { "type": "integer", "default": null }
   },
   "editorScript": "file:./index.js",
   "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
   "render": "file:./render.php"
 }

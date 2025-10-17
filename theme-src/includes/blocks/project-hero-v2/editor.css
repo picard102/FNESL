@@ -1,0 +1,60 @@
+/* Match the overall look of render.php */
+.project-hero-editor {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 1rem 1rem;
+  min-height: 40vh;
+  padding: 2rem 1.5rem;
+  color: inherit;
+  background-color: var(--wp--preset--color--primary-500, #356c85);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  isolation: isolate;
+}
+
+/* Media wrapper (image or video background) */
+.project-hero-editor__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.3;
+  mask-image: linear-gradient(5deg, transparent 10%, #000 50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+
+
+/* Inner content area (headline + expertise) */
+
+.project-hero-editor__inner {
+  position: relative;
+  z-index: 100;
+  max-width: var(--wp--style--global--content-size, 800px);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: var(--text-align, left);
+}
+
+
+/* Expertise label */
+.project-hero-editor__expertise {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--wp--preset--font-size-lg);
+  margin: 0;
+}
+
+/* Headline */
+.project-hero-editor h1 {
+  font-weight: 500;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 45ch;
+}
+

@@ -15,7 +15,7 @@
 
     "color": {
       "palette": [
-        { "slug": "primary", "color": "#356c85", "name": "Primary" },
+        { "slug": "primary", "color": "#579fb8", "name": "Primary" },
         { "slug": "primary-200", "color": "#bcdce5", "name": "Primary 200" },
         { "slug": "primary-700", "color": "#30596e", "name": "Primary 700" },
         { "slug": "secondary", "color": "#A01D2A", "name": "Secondary" },
@@ -170,6 +170,9 @@
           "fontSize": true,
           "lineHeight": true
         }
+      },
+      "fnesl/project-hero-v2": {
+        "typography": { "fontSize": true, "lineHeight": true }
       }
     }
   },

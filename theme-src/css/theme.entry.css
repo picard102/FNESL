@@ -281,9 +281,9 @@ ol.wp-block-list {
 
 
 
-.project-hero {
+/* .project-hero {
   @apply relative w-full min-h-[400px] overflow-hidden bg-primary-700 text-white;
-}
+} */
 
 .project-layout {
   @apply grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12;
