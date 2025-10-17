@@ -14,7 +14,7 @@ if ( have_posts() ) :
     $has_hero = has_block( 'fnesl/project-hero-v2', $content );
 ?>
 
-<main class="wp-site-blocks test">
+<main class="wp-site-blocks ">
   <?php
   // Optional top banner (block template part)
   //block_template_part( 'banner' );
@@ -40,8 +40,9 @@ if ( have_posts() ) :
   ?>
 
   <!-- Two-column layout below hero -->
-  <div class="project-layout alignwide grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12 px-6">
-    <article class="project-content prose max-w-none">
+  <div class="project-layout alignwide grid grid-cols-1 lg:grid-cols-[4fr_1fr] gap-12 mt-12 px-6">
+
+    <article class="project-content prose">
       <?php
       // Render all blocks except the hero
       if ( $has_hero ) {
@@ -58,14 +59,12 @@ if ( have_posts() ) :
 
     <aside class="project-sidebar">
       <?php
-      get_template_part( 'template-parts/project/meta', null, [ 'project_id' => $project_id ] );
+      get_template_part( 'parts/project/meta', null, [ 'project_id' => $project_id ] );
       ?>
     </aside>
   </div>
 
-  <?php
-  get_template_part( 'template-parts/project/related', null, [ 'project_id' => $project_id ] );
-  ?>
+
 </main>
 
 <?php

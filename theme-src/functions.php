@@ -4,17 +4,9 @@
 require_once __DIR__ . '/includes/cpt-projects.php';
 require_once get_template_directory() . '/includes/assets.php';
 
-add_action('after_setup_theme', function () {
-	error_log("FNESL [functions.php] after_setup_theme – loading blocks…");
-
-	register_block_type( get_stylesheet_directory() . '/includes/blocks/hello-world' );
-	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-hero' );
-	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-expertise-header' );
-
+add_action('init', function () {
+	//error_log("FNESL [functions.php] after_setup_theme – loading blocks…");
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-hero-v2' );
-
-	error_log(get_stylesheet_directory());
-
 });
 
 

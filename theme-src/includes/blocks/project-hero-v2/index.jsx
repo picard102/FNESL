@@ -216,7 +216,6 @@ registerBlockType("fnesl/project-hero-v2", {
 
         {/* ✨ Editor Preview */}
         <div {...blockProps}>
-
           {/* Background media */}
           {backgroundType === "video" && backgroundVideo?.url ? (
             <video
@@ -245,9 +244,12 @@ registerBlockType("fnesl/project-hero-v2", {
                 : __("Expertise: Auto", "fnesl")}
             </p>
 
-            <h1 className={`has-${normalizeFontSlug(fontSize)}-font-size`}>
-              {title || __("Project Title", "fnesl")}
-            </h1>
+            <h1
+              className={`has-${normalizeFontSlug(fontSize)}-font-size`}
+              dangerouslySetInnerHTML={{
+                __html: title || __("Project Title", "fnesl"),
+              }}
+            />
           </div>
         </div>
       </>

@@ -137,7 +137,7 @@ echo '<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-5
 
 
 <div class="project-hero__inner z-10 text-<?php echo esc_attr( $text_align ); ?>">
-test
+
 </div>
 
 

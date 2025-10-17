@@ -2,7 +2,6 @@
 
 <main class="wp-site-blocks">
 
-// Render banner if it's active (and header isn't loaded)
 
 
 
@@ -79,7 +78,7 @@ if (isset($locations[$menu_name])) {
 
 <ul class="flex gap-12 nav-left flex-1 flex justify-end mb-2">
       <?php foreach ($left_items as $item): ?>
-        <li><a href="<?= esc_url($item->url); ?>"><?= esc_html($item->title); ?></a></li>
+        <li><a href="<?= esc_url($item->url); ?>" class="line-clamp-1"><?= esc_html($item->title); ?></a></li>
       <?php endforeach; ?>
     </ul>
 
@@ -96,7 +95,7 @@ site-logo mx-auto flex-shrink-0 " aria-label="<?php bloginfo( 'name' ); ?>">
 
 <ul class="flex gap-12 nav-right flex-1 flex justify-start mb-2">
       <?php foreach ($right_items as $item): ?>
-        <li><a href="<?= esc_url($item->url); ?>"><?= esc_html($item->title); ?></a></li>
+        <li><a href="<?= esc_url($item->url); ?>" class="line-clamp-1"><?= esc_html($item->title); ?></a></li>
       <?php endforeach; ?>
     </ul>
 

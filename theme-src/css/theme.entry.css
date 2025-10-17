@@ -286,9 +286,13 @@ ol.wp-block-list {
 } */
 
 .project-layout {
-  @apply grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-12 mt-12;
+  @apply grid grid-cols-1 lg:grid-cols-[3fr_1fr] gap-12 mt-12;
 }
 
 .project-sidebar {
-  @apply text-sm text-primary-700 lg:sticky lg:top-8 self-start;
+  @apply lg:sticky lg:top-8 self-start;
+}
+
+.project-content {
+  max-width: var(--wp--style--global--content-size);
 }

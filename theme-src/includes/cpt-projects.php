@@ -81,3 +81,69 @@ add_action('init', function () {
 
     register_taxonomy('expertise', ['project'], $args);
 });
+
+
+
+
+// Register Client Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Client', 'fnesl'),
+        'singular_name'     => __('Client', 'fnesl'),
+        'search_items'      => __('Search Clients', 'fnesl'),
+        'all_items'         => __('All Clients', 'fnesl'),
+        'parent_item'       => __('Parent Client', 'fnesl'),
+        'parent_item_colon' => __('Parent Client:', 'fnesl'),
+        'edit_item'         => __('Edit Clients', 'fnesl'),
+        'update_item'       => __('Update Client', 'fnesl'),
+        'add_new_item'      => __('Add New Client', 'fnesl'),
+        'new_item_name'     => __('New Client Name', 'fnesl'),
+        'menu_name'         => __('Client', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => false,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => false,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'client'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('client', ['project'], $args);
+});
+
+
+
+// Register Location Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Location', 'fnesl'),
+        'singular_name'     => __('Location', 'fnesl'),
+        'search_items'      => __('Search Locations', 'fnesl'),
+        'all_items'         => __('All Locations', 'fnesl'),
+        'parent_item'       => __('Parent Location', 'fnesl'),
+        'parent_item_colon' => __('Parent Location:', 'fnesl'),
+        'edit_item'         => __('Edit Locations', 'fnesl'),
+        'update_item'       => __('Update Location', 'fnesl'),
+        'add_new_item'      => __('Add New Location', 'fnesl'),
+        'new_item_name'     => __('New Location Name', 'fnesl'),
+        'menu_name'         => __('Location', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => true,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => false,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'location'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('location', ['project'], $args);
+});
+
+
+
