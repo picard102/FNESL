@@ -12,12 +12,15 @@ if ( have_posts() ) :
     $project_id = get_the_ID();
     $content = get_the_content();
     $has_hero = has_block( 'fnesl/project-hero-v2', $content );
+
+
+
 ?>
 
 <main class="wp-site-blocks ">
   <?php
   // Optional top banner (block template part)
-  //block_template_part( 'banner' );
+	block_template_part( 'banner' );
 
   // --- FULL WIDTH HERO ---
   if ( $has_hero ) {
@@ -42,7 +45,7 @@ if ( have_posts() ) :
   <!-- Two-column layout below hero -->
   <div class="project-layout alignwide grid grid-cols-1 lg:grid-cols-[4fr_1fr] gap-12 mt-12 px-6">
 
-    <article class="project-content prose">
+    <article class="project-content prose wp-block-group ">
       <?php
       // Render all blocks except the hero
       if ( $has_hero ) {

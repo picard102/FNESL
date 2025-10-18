@@ -44,11 +44,19 @@ if ( $selected_expertise ) {
 }
 
 // blur class helper
-$blur_class = match ( $blur_level ) {
-	'xs'   => 'fnesl-blur-xs',
-	'sm'   => 'fnesl-blur-sm',
-	default => 'fnesl-blur-none',
-};
+switch ( $blur_level ) {
+	case 'xs':
+		$blur_class = 'fnesl-blur-xs';
+		break;
+
+	case 'sm':
+		$blur_class = 'fnesl-blur-sm';
+		break;
+
+	default:
+		$blur_class = 'fnesl-blur-none';
+		break;
+}
 ?>
 
 

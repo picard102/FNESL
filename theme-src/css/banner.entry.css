@@ -5,6 +5,15 @@
   content: none !important;
 }
 
+.site-banner {
+  margin: 0;
+}
+
+.wp-block-group.site-banner {
+  margin: 0;
+}
+
+
 /* Decorative blobs (front-end only) */
 .site-banner::before,
 .site-banner::after {

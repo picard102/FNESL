@@ -279,6 +279,13 @@ ol.wp-block-list {
   clear: both;
 }
 
+/* Restore spacing between blocks */
+.project-content > * + *,
+.wp-block-group > * + *,
+.wp-block-post-content > * + *,
+.wp-site-blocks > * + * {
+  margin-block-start: 1.5rem;
+}
 
 
 /* .project-hero {
