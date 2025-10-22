@@ -47,6 +47,37 @@ add_action('init', function () {
         'supports'           => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
         'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
 				'show_in_nav_menus'  => true,
+
+				'template' => [
+					[
+					'fnesl/project-hero-v2',
+					[
+						'showOverlay'    => true,
+						'fontSize'       => '3xl',
+					],
+					],
+					[
+						'core/paragraph',
+						[
+							'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+							'textColor' => 'primary',
+							'fontSize'  => 'lg',
+							'textColor'   => 'primary',
+							'fontFamily'  => 'ibm-plex-serif',
+						],
+					],
+					[
+						'core/paragraph',
+						[
+							'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.',
+						],
+					],
+
+
+
+
+				],
+
     ];
 
     register_post_type('project', $args);

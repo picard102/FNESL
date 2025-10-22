@@ -73,7 +73,7 @@ switch ( $blur_level ) {
 
 
 
-<div class="relative mx-auto p-2 project-hero alignfull  ">
+<div class="relative mx-auto px-2 project-hero alignfull  ">
 
 
 	<?php if ( $background_image ) :

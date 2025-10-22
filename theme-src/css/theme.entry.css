@@ -96,6 +96,10 @@ body {
   outline: 1px solid hsl(72, 90%, 50%);
 }
 
+
+
+
+
 /* ==========================================================================
    WordPress Core Block Layout Support
    ========================================================================== */
@@ -302,4 +306,18 @@ ol.wp-block-list {
 
 .project-content {
   max-width: var(--wp--style--global--content-size);
+}
+
+body:has(.project-hero) .site-banner {
+  padding-bottom: calc(var(--spacing) * 4);
+  margin-bottom: calc(var(--spacing) * -10);
+  margin-top: 0;
+}
+
+.site-banner {
+  margin-top: 0;
+}
+
+.project-hero .site-nav {
+  filter: drop-shadow(0 1px 0px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
 }

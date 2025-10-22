@@ -168,7 +168,7 @@
   },
   "styles": {
     "spacing": {
-      "blockGap": "1.5rem"
+      "blockGap": "10.5rem"
     },
     "color": {
       "background": "#ffffff",
