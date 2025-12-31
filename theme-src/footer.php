@@ -55,12 +55,6 @@
 
 
 
-<div class="flex gap-4 border-y my-12 py-12 justify-center">
-	<img src="<?php echo get_template_directory_uri(); ?>/assets/images/fnes-logo.png" alt=" Logo" class="h-12">
-	<img src="<?php echo get_template_directory_uri(); ?>/assets/images/indigenous-owned.png" alt="Logo " class="h-12">
-</div>
-
-
 
 <div class="flex gap-4 pb-12 justify-between text-xs">
 

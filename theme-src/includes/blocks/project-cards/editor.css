@@ -1,0 +1,87 @@
+/* ==========================================================================
+   fnesl / Project Cards – Editor Styles
+   ========================================================================== */
+
+.wp-block-fnesl-project-cards {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+}
+
+/* Status messages (loading / empty) */
+.wp-block-fnesl-project-cards .fnesl-pc__status {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+}
+
+/* Horizontal rail */
+.wp-block-fnesl-project-cards .fnesl-pc__items {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 8px 4px 4px;
+  list-style: none;
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Individual card */
+.wp-block-fnesl-project-cards .fnesl-pc__item {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: 200px;
+
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Thumbnail */
+.wp-block-fnesl-project-cards .fnesl-pc__thumb {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Content */
+.wp-block-fnesl-project-cards .fnesl-pc__content {
+  padding: 10px 12px;
+}
+
+/* Title */
+.wp-block-fnesl-project-cards .fnesl-pc__title {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+/* Excerpt */
+.wp-block-fnesl-project-cards .fnesl-pc__excerpt {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Clean up editor typography inheritance */
+.wp-block-fnesl-project-cards
+  .fnesl-pc__title
+  > * {
+  margin: 0;
+}
+
+.wp-block-fnesl-project-cards
+  .fnesl-pc__excerpt
+  > * {
+  margin: 0;
+}

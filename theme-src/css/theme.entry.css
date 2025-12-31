@@ -109,8 +109,8 @@ body {
   display: block;
 }
 
-/* Default content width constraint */
-.wp-site-blocks > * {
+/* Constrain normal blocks, but do NOT constrain alignwide/alignfull */
+.wp-site-blocks > *:not(.alignwide):not(.alignfull) {
   margin-left: auto;
   margin-right: auto;
   max-width: var(--wp--style--global--content-size);

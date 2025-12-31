@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "fnesl/profile-card",
+  "title": "Profile Card",
+  "category": "fnesl",
+  "icon": "id-alt",
+  "description": "Display a profile card with title, featured image, and role.",
+  "supports": {
+    "html": false,
+    "color": {
+      "text": true,
+      "background": true
+    }
+  },
+  "attributes": {
+    "profileId": { "type": "integer", "default": null }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "script": "file:./frontend.js",
+  "render": "file:./render.php"
+}

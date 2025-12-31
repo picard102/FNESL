@@ -2,11 +2,14 @@
 // Nothing yet, just here so WP loads itd
 
 require_once __DIR__ . '/includes/cpt-projects.php';
+require_once __DIR__ . '/includes/cpt-profiles.php';
 require_once get_template_directory() . '/includes/assets.php';
 
 add_action('init', function () {
 	//error_log("FNESL [functions.php] after_setup_theme – loading blocks…");
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-hero-v2' );
+	register_block_type( get_stylesheet_directory() . '/includes/blocks/profile-card' );
+	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-cards' );
 });
 
 
@@ -107,3 +110,8 @@ add_filter( 'block_categories_all', function( $categories, $post ) {
 
     return $categories;
 }, 10, 2 );
+
+add_action('enqueue_block_editor_assets', function () {
+  // Ensure apiFetch exists for any block that imports @wordpress/api-fetch
+  wp_enqueue_script('wp-api-fetch');
+}, 0);

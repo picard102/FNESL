@@ -44,8 +44,8 @@ add_action('init', function () {
         'hierarchical'       => false,
         'menu_position'      => 5,
         'menu_icon'          => 'dashicons-portfolio',
-        'supports'           => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields'],
-        'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
+				'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'],
+				'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
 				'show_in_nav_menus'  => true,
 
 				'template' => [
@@ -178,3 +178,61 @@ add_action('init', function () {
 
 
 
+// Register Partners Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Partners', 'fnesl'),
+        'singular_name'     => __('Partners', 'fnesl'),
+        'search_items'      => __('Search Partners', 'fnesl'),
+        'all_items'         => __('All Partners', 'fnesl'),
+        'parent_item'       => __('Parent Partners', 'fnesl'),
+        'parent_item_colon' => __('Parent Partners:', 'fnesl'),
+        'edit_item'         => __('Edit Partners', 'fnesl'),
+        'update_item'       => __('Update Partners', 'fnesl'),
+        'add_new_item'      => __('Add New Partners', 'fnesl'),
+        'new_item_name'     => __('New Partners Name', 'fnesl'),
+        'menu_name'         => __('Partners', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => false,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => false,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'partners'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('partners', ['project'], $args);
+});
+
+
+// Register Award Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Award', 'fnesl'),
+        'singular_name'     => __('Award', 'fnesl'),
+        'search_items'      => __('Search Awards', 'fnesl'),
+        'all_items'         => __('All Awards', 'fnesl'),
+        'parent_item'       => __('Parent Award', 'fnesl'),
+        'parent_item_colon' => __('Parent Award:', 'fnesl'),
+        'edit_item'         => __('Edit Awards', 'fnesl'),
+        'update_item'       => __('Update Award', 'fnesl'),
+        'add_new_item'      => __('Add New Award', 'fnesl'),
+        'new_item_name'     => __('New Award Name', 'fnesl'),
+        'menu_name'         => __('Award', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => false,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => false,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'award'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('award', ['project'], $args);
+});

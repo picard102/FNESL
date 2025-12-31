@@ -18,13 +18,17 @@
 
 
 
-
-<div class="wp-block-group alignwide">
 	<?php
+
+
 	if ( have_posts() ) {
 		while ( have_posts() ) {
+
 			the_post();
+			echo '<!-- TEMPLATE: about to output the_content() -->';
+
 			the_content();
+			echo '<!-- TEMPLATE: finished the_content() -->';
 		}
 	}
 	?>

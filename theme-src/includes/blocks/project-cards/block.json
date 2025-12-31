@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "fnesl/project-cards",
+  "title": "Project Cards",
+  "category": "fnesl",
+  "icon": "list-view",
+  "description": "Lists Project posts with configurable ordering.",
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "orderMode": { "type": "string", "default": "custom" },
+    "order": { "type": "string", "default": "ASC" },
+    "postsToShow": { "type": "integer", "default": 12 },
+    "showExcerpt": { "type": "boolean", "default": false },
+    "showFeaturedImage": { "type": "boolean", "default": false }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "script": "file:./frontend.js",
+  "render": "file:./render.php"
+}

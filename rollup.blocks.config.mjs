@@ -35,6 +35,7 @@ const wpExternals = [
   "wp-block-editor",
   "wp-data",
   "wp-core-data",
+  "wp-api-fetch",
 ];
 
 // Generate asset.php alongside each block bundle
@@ -67,7 +68,8 @@ function assetPhpPlugin() {
     'wp-components',
     'wp-data',
     'wp-block-editor',
-    'wp-core-data'
+    'wp-core-data',
+    'wp-api-fetch'
   ),
   'version' => '${version}',
 );`;
@@ -82,7 +84,7 @@ function assetPhpPlugin() {
 
 export default () => {
   // ✅ Glob relative to srcRoot now
-  const entryFiles = fg.sync("**/index.@(js|jsx)", { cwd: srcRoot });
+  const entryFiles = fg.sync("**/*.@(js|jsx)", { cwd: srcRoot });
 
   console.log("📦 Found blocks:", entryFiles);
 
@@ -98,7 +100,8 @@ export default () => {
     return {
       input: path.resolve(srcRoot, f),
       output: {
-        file: path.resolve(outRoot, `${blockDir}/index.js`),
+        dir: path.resolve(outRoot, blockDir),
+        entryFileNames: `[name].js`,
         format: "iife",
         sourcemap: true,
         globals: {
@@ -109,6 +112,7 @@ export default () => {
           "@wordpress/i18n": "wp.i18n",
           "@wordpress/data": "wp.data",
           "@wordpress/core-data": "wp.coreData",
+          "@wordpress/api-fetch": "wp.apiFetch",
         },
       },
       external: wpExternals,

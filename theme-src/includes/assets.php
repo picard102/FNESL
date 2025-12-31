@@ -165,16 +165,17 @@ function fnesl_enqueue_manifest_css( $entry, $handle ) {
 	}
 }
 
-add_action( 'render_block', function( $block_content, $block ) {
-	if (
-		$block['blockName'] === 'core/template-part'
-		&& ( $block['attrs']['slug'] ?? '' ) === 'banner'
-	) {
-		error_log( "[FNESL] Enqueuing banner styles for template part 'banner'" );
-		fnesl_enqueue_manifest_css( 'css/banner.entry.css', 'fnesl-banner-style' );
-	}
-	return $block_content;
-}, 10, 2 );
+// add_filter( 'render_block', function( $block_content, $block ) {
+// 	if (
+// 		$block['blockName'] === 'core/template-part'
+// 		&& ( $block['attrs']['slug'] ?? '' ) === 'banner'
+// 	) {
+// 		error_log( "[FNESL] Enqueuing banner styles for template part 'banner'" );
+// 		fnesl_enqueue_manifest_css( 'css/banner.entry.css', 'fnesl-banner-style' );
+// 	}
+
+// 	return $block_content;
+// }, 10, 2 );
 
 
 add_action( 'enqueue_block_editor_assets', function() {
