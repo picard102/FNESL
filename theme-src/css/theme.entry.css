@@ -321,3 +321,21 @@ body:has(.project-hero) .site-banner {
 .project-hero .site-nav {
   filter: drop-shadow(0 1px 0px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
 }
+
+
+
+/* Put this in your theme CSS somewhere */
+.affiliation-logo svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Force fills to follow currentColor (Tailwind’s text-* controls this) */
+.affiliation-logo svg [fill]:not([fill="none"]):not([fill^="url("]) {
+  fill: currentColor !important;
+}
+
+/* Same idea for strokes */
+.affiliation-logo svg [stroke]:not([stroke="none"]):not([stroke^="url("]) {
+  stroke: currentColor !important;
+}

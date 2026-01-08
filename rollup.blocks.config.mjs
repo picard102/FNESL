@@ -84,7 +84,9 @@ function assetPhpPlugin() {
 
 export default () => {
   // ✅ Glob relative to srcRoot now
-  const entryFiles = fg.sync("**/*.@(js|jsx)", { cwd: srcRoot });
+  const entryFiles = fg.sync(["**/*.@(js|jsx)", "!_shared/**"], {
+    cwd: srcRoot,
+  });
 
   console.log("📦 Found blocks:", entryFiles);
 

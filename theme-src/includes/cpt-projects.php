@@ -236,3 +236,156 @@ add_action('init', function () {
 
     register_taxonomy('award', ['project'], $args);
 });
+
+
+
+
+/**
+ * Single JSON endpoint for Project Archive (filters + projects + pagination)
+ *
+ * POST /wp-json/fnesl/v1/project-archive
+ * Body:
+ * {
+ *   "page": 1,
+ *   "perPage": 12,
+ *   "mode": "and" | "or",
+ *   "terms": { "expertise":[1,2], "partners":[...], "location":[...], "client":[...], "awards":[...] },
+ *   "show": ["expertise","partners","location","client","awards"],   // optional; used to limit filters returned
+ *   "includeFilters": true | false                                  // optional; default true
+ * }
+ */
+add_action( 'rest_api_init', function () {
+
+	register_rest_route( 'fnesl/v1', '/project-archive', [
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $req ) {
+
+			$allowed_tax = [ 'expertise', 'partners', 'location', 'client', 'awards' ];
+
+			// --- Inputs ---
+			$page    = max( 1, (int) $req->get_param( 'page' ) );
+			$perPage = (int) $req->get_param( 'perPage' );
+			$perPage = max( 1, min( 100, $perPage > 0 ? $perPage : 12 ) );
+
+			$mode_in = (string) $req->get_param( 'mode' );
+			$mode    = ( $mode_in === 'or' ) ? 'OR' : 'AND';
+
+			$include_filters = $req->get_param( 'includeFilters' );
+			$include_filters = ( $include_filters === null ) ? true : (bool) $include_filters;
+
+			$terms_by_tax = (array) $req->get_param( 'terms' );
+
+			$show = $req->get_param( 'show' );
+			if ( is_string( $show ) ) {
+				$show = array_filter( array_map( 'trim', explode( ',', $show ) ) );
+			}
+			$show = is_array( $show ) ? $show : $allowed_tax;
+			$show = array_values( array_intersect( $allowed_tax, array_map( 'sanitize_key', $show ) ) );
+
+			// --- Build tax_query ---
+			$tax_query = [ 'relation' => $mode ];
+
+			foreach ( $allowed_tax as $tax ) {
+				$ids = $terms_by_tax[ $tax ] ?? [];
+				if ( ! is_array( $ids ) || empty( $ids ) ) continue;
+
+				$ids = array_values( array_filter( array_map( 'intval', $ids ) ) );
+				if ( empty( $ids ) ) continue;
+
+				$tax_query[] = [
+					'taxonomy' => $tax,
+					'field'    => 'term_id',
+					'terms'    => $ids,
+					'operator' => 'IN',
+				];
+			}
+
+			$args = [
+				'post_type'           => 'project',
+				'post_status'         => 'publish',
+				'ignore_sticky_posts' => true,
+				'posts_per_page'      => $perPage,
+				'paged'               => $page,
+
+				// ✅ Featured image required: accurate totals/pagination
+				'meta_query'          => [
+					[
+						'key'     => '_thumbnail_id',
+						'compare' => 'EXISTS',
+					],
+				],
+			];
+
+			// Only apply tax_query if something is selected
+			if ( count( $tax_query ) > 1 ) {
+				$args['tax_query'] = $tax_query;
+			}
+
+			$q = new WP_Query( $args );
+
+			$projects = [];
+			if ( $q->have_posts() ) {
+				foreach ( $q->posts as $p ) {
+					$projects[] = [
+						'id'    => (int) $p->ID,
+						'title' => (string) get_the_title( $p->ID ),
+						'link'  => (string) get_permalink( $p->ID ),
+						'image' => (string) get_the_post_thumbnail_url( $p->ID, 'large' ),
+					];
+				}
+			}
+
+			$total       = (int) $q->found_posts;
+			$total_pages = max( 1, (int) $q->max_num_pages );
+
+			wp_reset_postdata();
+
+			// --- Filters payload (optional) ---
+			$filters = null;
+
+			if ( $include_filters ) {
+				$filters = [];
+
+				foreach ( $show as $tax ) {
+					if ( ! taxonomy_exists( $tax ) ) continue;
+
+					$terms = get_terms([
+						'taxonomy'   => $tax,
+						'hide_empty' => true,
+						'orderby'    => 'name',
+						'order'      => 'ASC',
+					]);
+
+					if ( is_wp_error( $terms ) || empty( $terms ) ) continue;
+
+					$filters[ $tax ] = array_map( function ( $t ) {
+						return [
+							'id'   => (int) $t->term_id,
+							'name' => (string) $t->name,
+							'slug' => (string) $t->slug,
+							'count'=> (int) $t->count,
+							'parent'=> (int) $t->parent,
+							'description' => (string) $t->description,
+						];
+					}, $terms );
+				}
+			}
+
+			$response = [
+				'mode'       => strtolower( $mode ),
+				'page'       => $page,
+				'perPage'    => $perPage,
+				'projects'   => $projects,
+				'total'      => $total,
+				'totalPages' => $total_pages,
+			];
+
+			if ( $include_filters ) {
+				$response['filters'] = $filters;
+			}
+
+			return $response;
+		},
+	] );
+} );

@@ -1,0 +1,15 @@
+.wp-block-fnesl-project-archive {
+  border: 1px dashed rgba(0,0,0,.25);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,.7);
+}
+
+.wp-block-fnesl-project-archive .fnesl-pa__editor-note p {
+  margin: 8px 0 0;
+}
+
+.wp-block-fnesl-project-archive .fnesl-pa__editor-meta {
+  opacity: .75;
+  font-size: 13px;
+}

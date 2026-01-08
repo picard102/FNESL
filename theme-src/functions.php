@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/includes/cpt-projects.php';
 require_once __DIR__ . '/includes/cpt-profiles.php';
+require_once __DIR__ . '/includes/cpt-affiliations.php';
 require_once get_template_directory() . '/includes/assets.php';
 
 add_action('init', function () {
@@ -10,6 +11,7 @@ add_action('init', function () {
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-hero-v2' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/profile-card' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-cards' );
+	register_block_type( get_stylesheet_directory() . '/includes/blocks/project-archive' );
 });
 
 
@@ -32,6 +34,7 @@ add_action('after_setup_theme', function () {
     add_theme_support('wp-block-styles');
 		register_nav_menus([
 			'primary' => __('Primary Menu', 'fnesl'),
+			'footer' => __('Footer Menu', 'fnesl'),
 	]);
 
 });

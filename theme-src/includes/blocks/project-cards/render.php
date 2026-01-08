@@ -107,7 +107,7 @@ $gutter    = 'var(--wp--style--root--padding-left, 1rem)';
 	>
 		<button
 			type="button"
-			class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-black shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 disabled:opacity-40 disabled:cursor-not-allowed"
+			class="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-current text-current  focus:outline-none focus:ring-2 ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed"
 			data-carousel-prev
 			aria-label="Previous projects"
 			aria-controls="<?php echo esc_attr( $track_id ); ?>"
@@ -118,7 +118,7 @@ $gutter    = 'var(--wp--style--root--padding-left, 1rem)';
 
 		<button
 			type="button"
-			class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white/80 text-black shadow-sm hover:bg-white focus:outline-none focus:ring-2 focus:ring-black/20 disabled:opacity-40 disabled:cursor-not-allowed"
+			class="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-current text-current  focus:outline-none ring-offset-1 focus:ring-2 disabled:opacity-40 disabled:cursor-not-allowed"
 			data-carousel-next
 			aria-label="Next projects"
 			aria-controls="<?php echo esc_attr( $track_id ); ?>"
