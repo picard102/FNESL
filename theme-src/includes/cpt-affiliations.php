@@ -54,13 +54,13 @@ add_action('init', function () {
 
 require_once __DIR__ . '/affiliations/svg-meta.php';
 
-// // Disable Gutenberg for the affiliation CPT
-// add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
-//   if ($post_type === 'affiliation') {
-//     return false;
-//   }
-//   return $use_block_editor;
-// }, 10, 2);
+// Disable Gutenberg for the affiliation CPT
+add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
+  if ($post_type === 'affiliation') {
+    return false;
+  }
+  return $use_block_editor;
+}, 10, 2);
 
 
 /**
