@@ -128,7 +128,7 @@ add_action('enqueue_block_editor_assets', 'fnesl_editor_assets');
  * Enqueues the BrowserSync client script for live reloading during development.
  *
  * This function checks if WordPress debugging is enabled and if the site is running
- * on the local development domain ('fnesl.local'). If both conditions are met,
+ * on the local development domain ('fnesl.ddev.site'). If both conditions are met,
  * it enqueues the BrowserSync client script to facilitate live reloading.
  *
  * The script is enqueued for both frontend and admin pages.
@@ -136,10 +136,10 @@ add_action('enqueue_block_editor_assets', 'fnesl_editor_assets');
  * @see https://browsersync.io/
  */
 function fnesl_browsersync() {
-	if ( defined('WP_DEBUG') && WP_DEBUG && str_contains($_SERVER['SERVER_NAME'], 'fnesl.local') ) {
+	if ( defined('WP_DEBUG') && WP_DEBUG && str_contains($_SERVER['SERVER_NAME'], 'fnesl.ddev.site') ) {
 			wp_enqueue_script(
 					'browsersync',
-					'https://fnesl.local:2519/browser-sync/browser-sync-client.js',
+					'https://fnesl.ddev.site:2519/browser-sync/browser-sync-client.js',
 					[],
 					null,
 					true
@@ -164,18 +164,6 @@ function fnesl_enqueue_manifest_css( $entry, $handle ) {
 		);
 	}
 }
-
-// add_filter( 'render_block', function( $block_content, $block ) {
-// 	if (
-// 		$block['blockName'] === 'core/template-part'
-// 		&& ( $block['attrs']['slug'] ?? '' ) === 'banner'
-// 	) {
-// 		error_log( "[FNESL] Enqueuing banner styles for template part 'banner'" );
-// 		fnesl_enqueue_manifest_css( 'css/banner.entry.css', 'fnesl-banner-style' );
-// 	}
-
-// 	return $block_content;
-// }, 10, 2 );
 
 
 add_action( 'enqueue_block_editor_assets', function() {
