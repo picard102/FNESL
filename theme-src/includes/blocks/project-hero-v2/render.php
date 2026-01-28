@@ -87,8 +87,15 @@ switch ( $blur_level ) {
  endif; ?>
 
 
+<div class="max-w-[1800px] mx-auto p-2">
 
-	<div class="max-w-[1536px] mx-auto rounded-b-lg relative isolate flex justify-between flex-col overflow-hidden  px-2 py-2.5  border border-white/10 sm:px-6  min-h-120 h-[70vh]  " style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;">
+	<div class="  bg-primary-500  text-white rounded-md h-[85dvh] max-h-[800px]  justify-between flex flex-col isolate mx-auto
+
+	 relative overflow-hidden    " style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;">
+
+
+	 <?php get_template_part( 'parts/menu', null, null ); ?>
+
 
 
 	<?php if ( $show_overlay ) :
@@ -150,7 +157,13 @@ echo '<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-5
 
 
 
-		<div class="project-hero__inner mb-3 z-10  sm:px-6  text-<?php echo esc_attr( $text_align ); ?>">
+
+
+		<div class="project-hero__inner z-10
+
+		container py-12 px-6  items-end
+
+		text-<?php echo esc_attr( $text_align ); ?>">
 
 			<?php if ( $expertise_name ) : ?>
 				<div class="flex gap-2 items-center mb-2 expertise-label ">
@@ -170,4 +183,5 @@ echo '<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-5
 
 
 	</div>
+</div>
 </div>

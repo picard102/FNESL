@@ -5,7 +5,7 @@ get_header();
 
 	<?php
   // Optional top banner (block template part)
-	block_template_part( 'banner' );
+
       get_template_part( 'parts/menu', null, null );
       ?>
 

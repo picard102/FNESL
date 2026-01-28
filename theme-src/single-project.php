@@ -20,7 +20,7 @@ if ( have_posts() ) :
 <main class="wp-site-blocks ">
   <?php
   // Optional top banner (block template part)
-	block_template_part( 'banner' );
+	// block_template_part( 'banner' );
 
   // --- FULL WIDTH HERO ---
   if ( $has_hero ) {
