@@ -44,7 +44,7 @@ add_action('init', function () {
         'hierarchical'       => false,
         'menu_position'      => 5,
         'menu_icon'          => 'dashicons-portfolio',
-				'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'],
+				'supports' => ['title', 'editor', 'excerpt', 'custom-fields', 'page-attributes'],
 				'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
 				'show_in_nav_menus'  => true,
     ];
@@ -52,6 +52,15 @@ add_action('init', function () {
     register_post_type('affiliation', $args);
 });
 
+require_once __DIR__ . '/affiliations/svg-meta.php';
+
+// // Disable Gutenberg for the affiliation CPT
+// add_filter('use_block_editor_for_post_type', function ($use_block_editor, $post_type) {
+//   if ($post_type === 'affiliation') {
+//     return false;
+//   }
+//   return $use_block_editor;
+// }, 10, 2);
 
 
 /**
@@ -61,8 +70,28 @@ add_action('init', function () {
  * Usage:
  * echo tpe_inline_featured_svg( $post_id, 'w-full h-auto fill-current text-white' );
  */
+/**
+ * Inline an SVG for an affiliation.
+ * Prefers the "single colour" logo meta, falls back to "full colour" logo meta,
+ * and finally falls back to the featured image (optional).
+ */
 function tpe_inline_featured_svg( int $post_id, string $svg_class = '' ): string {
-	$thumb_id = get_post_thumbnail_id( $post_id );
+
+	$thumb_id = 0;
+
+	// ✅ Prefer single-colour meta, then full-colour meta
+	$one_id  = (int) get_post_meta( $post_id, 'affiliation_svg_logo_1c_id', true );
+	$full_id = (int) get_post_meta( $post_id, 'affiliation_svg_logo_id', true );
+
+	if ( $one_id ) {
+		$thumb_id = $one_id;
+	} elseif ( $full_id ) {
+		$thumb_id = $full_id;
+	} else {
+		// Optional fallback to featured image
+		$thumb_id = (int) get_post_thumbnail_id( $post_id );
+	}
+
 	if ( ! $thumb_id ) {
 		return '';
 	}
@@ -81,34 +110,18 @@ function tpe_inline_featured_svg( int $post_id, string $svg_class = '' ): string
 	if ( ! $svg ) {
 		return '';
 	}
+
 	// Remove <style> blocks
-	$svg = preg_replace(
-		'#<style\b[^>]*>(.*?)</style>#is',
-		'',
-		$svg
-	);
+	$svg = preg_replace( '#<style\b[^>]*>(.*?)</style>#is', '', $svg );
 
 	// Remove inline style attributes
-	$svg = preg_replace(
-		'/\sstyle=("|\')(.*?)\1/i',
-		'',
-		$svg
-	);
+	$svg = preg_replace( '/\sstyle=("|\')(.*?)\1/i', '', $svg );
 
 	// Remove solid fill attributes (keep none, currentColor, gradients)
-	$svg = preg_replace(
-		'/\sfill=("|\')(?!none|currentColor|url\()(.*?)\1/i',
-		'',
-		$svg
-	);
+	$svg = preg_replace( '/\sfill=("|\')(?!none|currentColor|url\()(.*?)\1/i', '', $svg );
 
 	// Remove solid stroke attributes (same logic)
-	$svg = preg_replace(
-		'/\sstroke=("|\')(?!none|currentColor|url\()(.*?)\1/i',
-		'',
-		$svg
-	);
-
+	$svg = preg_replace( '/\sstroke=("|\')(?!none|currentColor|url\()(.*?)\1/i', '', $svg );
 
 	// Basic hardening: strip scripts and on* handlers.
 	$svg = preg_replace( '#<script\b[^>]*>(.*?)</script>#is', '', $svg );
@@ -120,7 +133,7 @@ function tpe_inline_featured_svg( int $post_id, string $svg_class = '' ): string
 		if ( preg_match( '/<svg\b[^>]*\bclass=([\'"])(.*?)\1/i', $svg ) ) {
 			$svg = preg_replace_callback(
 				'/(<svg\b[^>]*\bclass=)([\'"])(.*?)(\2)/i',
-				function( $m ) use ( $svg_class ) {
+				function ( $m ) use ( $svg_class ) {
 					$existing = trim( $m[3] );
 					$merged   = trim( $existing . ' ' . $svg_class );
 					return $m[1] . $m[2] . esc_attr( $merged ) . $m[4];
@@ -140,6 +153,8 @@ function tpe_inline_featured_svg( int $post_id, string $svg_class = '' ): string
 
 	return $svg;
 }
+
+
 
 
 
@@ -204,3 +219,7 @@ function tpe_logo_width_percent_from_ratio( float $r ): float {
 
 	return 79;                 // ultra-wide
 }
+
+
+
+

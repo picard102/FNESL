@@ -82,10 +82,6 @@ $menu_items = wp_get_nav_menu_items($menu->term_id);
 
 
 
-<div class="p-3 flex items-start mb-2 expertise-label decoration-white col-start-1 row-start-1 isolate z-10">
-	<svg class="aspect-square h-5 fill-current mr-2" aria-hidden="true"><use xlink:href="#exp-energy"></use></svg>
-	<span class="text-sm pl-2 border-l ">	Energy</span>
-</div>
 
 							<div class="relative  col-start-1 row-start-1 row-end-3  overflow-hidden   border border-primary-300  rounded-xs">
 
@@ -135,10 +131,10 @@ $menu_items = wp_get_nav_menu_items($menu->term_id);
 
 			<div class="  absolute inset-0 -z-10 overflow-hidden rounded-md  " aria-hidden="true">
 
-					<img decoding="async" src="https://fnesl.local/wp-content/uploads/2025/09/DSC09232-scaled-1.webp" alt="" class="opacity-0 absolute inset-0 object-cover h-full w-full blur-xs" aria-hidden="true" data-fallback="true">
+					<img decoding="async" src="http://fnesl.ca/temp/wordpress/wp-content/uploads/2025/10/sl40wtp-hero.mp4" alt="" class="opacity-0 absolute inset-0 object-cover h-full w-full blur-xs" aria-hidden="true" data-fallback="true">
 
-					<video autoplay="" muted="" loop="" playsinline="" poster="https://fnesl.local/wp-content/uploads/2025/09/DSC09232-scaled-1.webp" class="opacity-30 absolute inset-0 object-cover h-full w-full blur-xs" data-video="true">
-				<source src="https://fnesl.local/wp-content/uploads/2025/10/web-home-banner-video_1.mp4" type="video/mp4">
+					<video autoplay="" muted="" loop="" playsinline="" poster="http://fnesl.ca/temp/wordpress/wp-content/uploads/2025/10/sl40wtp-hero.mp4" class="opacity-30 absolute inset-0 object-cover h-full w-full blur-xs" data-video="true">
+				<source src="http://fnesl.ca/temp/wordpress/wp-content/uploads/2025/10/sl40wtp-hero.mp4" type="video/mp4">
 			</video>
 
 			<script>
@@ -216,7 +212,7 @@ $menu_items = wp_get_nav_menu_items($menu->term_id);
 	<?php
   // Optional top banner (block template part)
 	// block_template_part( 'banner' );
-      get_template_part( 'parts/menu', null, null );
+     // get_template_part( 'parts/menu', null, null );
       ?>
 
 
@@ -245,6 +241,18 @@ $menu_items = wp_get_nav_menu_items($menu->term_id);
 </main>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 <?php
 
 $affiliations = get_posts([
@@ -265,22 +273,149 @@ if ( $affiliations ) {
 	echo '<ul class="grid grid-cols-2 gap-6  ">';
 
 	foreach ( $affiliations as $affiliation ) {
-		?>
-			<li class="bg-white rounded-sm p-6 grid grid-cols-[1fr_2fr] gap-6">
 
-				<div class=" flex items-center justify-center fill-current ">
-				<?php echo wp_get_attachment_image( get_post_thumbnail_id( $affiliation->ID ), 'full', false, [ 'class' => 'w-full' ] ); ?>
+	// New meta keys
+	$logo_id = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true ); // full colour
+	$url     = (string) get_post_meta( $affiliation->ID, 'affiliation_url', true );
+
+	if ( ! $logo_id  ) {
+		continue;
+	}
+	?>
+
+
+	<li class="bg-white rounded-sm p-6 grid grid-cols-[1fr_2fr] gap-6">
+
+
+	<div class="flex items-center justify-center">
+		<?php
+		$logo_html = '';
+
+		if ( $logo_id ) {
+			$logo_html = wp_get_attachment_image(
+				$logo_id,
+				'full',
+				false,
+				[
+					'class' => 'w-full max-h-[100px] h-auto object-contain',
+					'alt'   => esc_attr( get_the_title( $affiliation->ID ) ) . ' logo',
+				]
+			);
+		}
+		if ( $logo_html ) {
+			// If URL exists, wrap logo in link
+			if ( $url ) {
+				echo '<a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer" class="block w-full">';
+				echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '</a>';
+			} else {
+				echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+		}
+		?>
+	</div>
+
+	<div class="flex flex-col justify-center items-start self-start">
+		<h3 class="text-xl mb-2"><?php echo esc_html( get_the_title( $affiliation->ID ) ); ?></h3>
+
+		<div class="text-sm text-primary-900">
+			<?php echo wp_kses_post( wpautop( get_post_field( 'post_content', $affiliation->ID ) ) ); ?>
+		</div>
+
+		<?php if ( $url ) : ?>
+			<a
+				href="<?php echo esc_url( $url ); ?>"
+				class="mt-6 text-sm text-primary-500 flex gap-3"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<span class="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center">
+					<svg class="aspect-square h-3 fill-current" aria-hidden="true">
+						<use xlink:href="#icons_arrow_east"></use>
+					</svg>
+				</span>
+				Visit Website
+			</a>
+		<?php endif; ?>
+	</div>
+
+</li>
+
+
+		<?php } ?>
+		</ul></div>
+<?php } ?>
+
+
+
+
+
+<div class="container bg-primary-900 text-white rounded-sm mt-12 mb-12 grid grid-cols-3 gap-6 p-6 divide-x divide-primary-600 ">
+
+	<div class="flex flex-col px-3">
+		<h3 class="text-6xl text-white mb-3 font-thin ">100%</h3>
+		<p class="text-sm  max-w-prose text-primary-300">Indigenous Owned. <br>Firm led and operated by Indigenous professionals.</p>
+	</div>
+
+	<div class="flex flex-col px-3">
+		<h3 class="text-6xl text-white mb-3 font-thin  ">100%</h3>
+		<p class="text-sm  max-w-prose text-primary-300">Indigenous Owned. <br>Firm led and operated by Indigenous professionals.</p>
+	</div>
+
+	<div class="flex flex-col px-3">
+		<h3 class="text-6xl text-white mb-3 font-thin  ">100%</h3>
+		<p class="text-sm  max-w-prose text-primary-300">Indigenous Owned. <br>Firm led and operated by Indigenous professionals.</p>
+	</div>
+
+
+</div>
+
+
+
+
+
+<?php
+
+$newsposts = get_posts([
+  'post_type'   => 'post',
+  'numberposts' => 2,
+	'orderby'     => 'menu_order',
+]);
+
+if ( $newsposts ) {
+
+	echo '<div class="container flex flex-col items-center border-t border-primary-100 pt-12 pb-12 mt-12 mb-12 ">
+
+	<h3 class="text-4xl text-primary-500 mb-6 ">Latest News & Events</h3>
+	<p class="text-sm mb-12" >Lorum Ipsum dolor sit amet, consectetur adipiscing elit.</p>';
+
+
+
+	echo '<ul class="grid grid-cols-3 gap-6  ">';
+
+	foreach ( $newsposts as $newspost ) {
+		?>
+			<li class="bg-white rounded-sm p-3 flex flex-col gap-6">
+
+				<div class=" flex items-center justify-center fill-current aspect-video bg-primary-900 grid grid-cols-1 grid-rows-1 overflow-hidden rounded-sm  relative   ">
+
+					<div class="text-white text-xs col-start-1 row-start-1 self-start flex items-center gap-2 z-10 m-3">
+						<div class="rounded-full bg-current w-2 h-2"></div>
+						News <div class="rounded-sm bg-primary-500 w-0.5 h-3 mx-2"></div> <?php echo esc_html( get_the_date( 'M d, Y', $newspost->ID ) ); ?>
+					</div>
+
+					<?php echo wp_get_attachment_image( get_post_thumbnail_id( $newspost->ID ), 'medium', false, [ 'class' => 'w-full h-full cover col-start-1 row-start-1 opacity-50' ] ); ?>
 				</div>
 
 				<div class=" flex flex-col justify-center  items-start self-start">
-					<h3 class="text-xl mb-2 "><?php echo esc_html( get_the_title( $affiliation->ID ) ); ?></h3>
+					<h3 class="text-lg text-primary-600 mb-2 "><?php echo esc_html( get_the_title( $newspost->ID ) ); ?></h3>
 					<div class="text-sm text-primary-900 ">
-						<?php echo wp_kses_post( wpautop( get_post_field( 'post_content', $affiliation->ID ) ) ); ?>
+						<?php echo wp_kses_post( wpautop( get_post_field( 'post_content', $newspost->ID ) ) ); ?>
 					</div>
 
-					<a href="<?php echo esc_url( get_post_meta( $affiliation->ID, 'affiliation_website', true ) ); ?>" class="mt-6 text-sm text-primary-500 flex gap-3 " target="_blank" rel="noopener noreferrer"><span class="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center ">
+					<a href="<?php echo esc_url( get_post_meta( $newspost->ID, 'affiliation_website', true ) ); ?>" class="mt-6 text-sm text-primary-500 flex gap-3 " target="_blank" rel="noopener noreferrer"><span class="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center ">
 									<svg class="aspect-square h-3 fill-current" aria-hidden="true"><use xlink:href="#icons_arrow_east"></use></svg>
-								</span>  Visit Website <?php echo esc_html( get_post_meta( $affiliation->ID, 'affiliation_website', true ) ); ?></a>
+								</span> Read More <?php echo esc_html( get_post_meta( $newspost->ID, 'affiliation_website', true ) ); ?></a>
 				</div>
 
 
@@ -289,6 +424,10 @@ if ( $affiliations ) {
 		<?php } ?>
 		</ul></div>
 <?php } ?>
+
+
+
+
 
 
 

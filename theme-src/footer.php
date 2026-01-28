@@ -36,7 +36,7 @@ if ( $affiliations ) : ?>
 
 
 
-
+<!--
   <ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
     <?php foreach ( $affiliations as $affiliation ) :
 
@@ -64,8 +64,56 @@ if ( $affiliations ) : ?>
 </li>
 
     <?php endforeach; ?>
-  </ul>
+  </ul> -->
 
+
+
+
+	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+	<?php foreach ( $affiliations as $affiliation ) :
+
+		// Prefer single-colour meta, fallback to full-colour meta
+		$logo_id = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_1c_id', true );
+		if ( ! $logo_id ) {
+			$logo_id = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true );
+		}
+
+		// Skip entirely if we have no logo
+		if ( ! $logo_id ) {
+			continue;
+		}
+
+		$ratio = tpe_svg_aspect_ratio_from_attachment( $logo_id );
+		$w_pct = $ratio ? tpe_logo_width_percent_from_ratio( $ratio ) : 55.359769747362;
+
+		// keep layout sane if something unexpected comes back
+		$w_pct = max( 10, min( 100, (float) $w_pct ) );
+
+		$url = (string) get_post_meta( $affiliation->ID, 'affiliation_url', true );
+		?>
+		<li>
+			<a
+				href="<?php echo esc_url( $url ?: '#' ); ?>"
+				<?php if ( $url ) : ?>
+					target="_blank" rel="noopener noreferrer"
+				<?php else : ?>
+					aria-disabled="true" tabindex="-1"
+				<?php endif; ?>
+				class="flex items-center justify-center col h-16 p-4 hover:text-white transition-colors duration-300 ease-in-out"
+			>
+				<div class="flex items-center justify-center" style="width: <?php echo esc_attr( $w_pct ); ?>%;">
+					<?php
+					echo tpe_inline_featured_svg(
+						$affiliation->ID,
+						'w-full fill-current',
+						$logo_id
+					); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					?>
+				</div>
+			</a>
+		</li>
+	<?php endforeach; ?>
+</ul>
 
 
 </div>
