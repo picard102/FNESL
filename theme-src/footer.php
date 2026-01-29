@@ -36,40 +36,8 @@ if ( $affiliations ) : ?>
 
 
 
-<!--
-  <ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-    <?php foreach ( $affiliations as $affiliation ) :
 
-      $thumb_id = get_post_thumbnail_id( $affiliation->ID );
-
-      $ratio = $thumb_id ? tpe_svg_aspect_ratio_from_attachment( $thumb_id ) : null;
-      $w_pct = $ratio ? tpe_logo_width_percent_from_ratio( $ratio ) : 55.359769747362;
-
-      // keep layout sane if something unexpected comes back
-      $w_pct = max(10, min(100, (float) $w_pct));
-      ?>
-
-<li class="">
-	<a href="" class="flex items-center justify-center col h-16 p-4 hover:text-white
-	transition-colors duration-300 ease-in-out  ">
-		<div class="flex items-center justify-center" style="width: <?php echo esc_attr( $w_pct ); ?>%;">
-			<?php
-				echo tpe_inline_featured_svg(
-					$affiliation->ID,
-					'w-full  fill-current'
-				); // phpcs:ignore
-			?>
-		</div>
-			</a>
-</li>
-
-    <?php endforeach; ?>
-  </ul> -->
-
-
-
-
-	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-7">
 	<?php foreach ( $affiliations as $affiliation ) :
 
 		// Prefer single-colour meta, fallback to full-colour meta
@@ -77,6 +45,7 @@ if ( $affiliations ) : ?>
 		if ( ! $logo_id ) {
 			$logo_id = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true );
 		}
+
 
 		// Skip entirely if we have no logo
 		if ( ! $logo_id ) {
@@ -125,36 +94,6 @@ if ( $affiliations ) : ?>
 
 
 
-
-<!--
-<?php if ( $affiliations ) : ?>
-  <ul
-    class="flex flex-wrap gap-3 items-center justify-center mt-6
-           [--per-row:3] md:[--per-row:4] lg:[--per-row:6]"
-  >
-    <?php foreach ( $affiliations as $affiliation ) :
-      $thumb_id = get_post_thumbnail_id( $affiliation->ID );
-      $ratio    = $thumb_id ? tpe_svg_aspect_ratio_from_attachment( $thumb_id ) : null;
-      $w_pct    = $ratio ? tpe_logo_width_percent_from_ratio( $ratio ) : 55.359769747362;
-      $w_pct    = max(10, min(100, (float) $w_pct));
-    ?>
-      <li class="overflow-hidden"
-          style="flex: 0 0 calc(<?php echo esc_attr( $w_pct ); ?>% / var(--per-row));">
-        <a href="" class="flex items-center justify-center h-16 p-4">
-          <div class="flex items-center justify-center" style="width: <?php echo esc_attr( $w_pct ); ?>%;">
-            <?php
-              echo tpe_inline_featured_svg(
-                $affiliation->ID,
-                'w-full fill-current'
-              );
-            ?>
-          </div>
-				</a>
-      </li>
-    <?php endforeach; ?>
-  </ul>
-<?php endif; ?>
- -->
 
 
 
