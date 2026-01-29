@@ -161,15 +161,21 @@ echo '<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-5
 
 		<div class="project-hero__inner z-10
 
-		container py-12 px-6  items-end
+		container  px-6  items-end
 
 		text-<?php echo esc_attr( $text_align ); ?>">
 
 			<?php if ( $expertise_name ) : ?>
-				<div class="flex gap-2 items-center mb-2 expertise-label ">
-					<svg class="aspect-square h-5 fill-current" aria-hidden="true"><use xlink:href="#exp-<?php echo sanitize_title( $expertise_name ); ?>"></use></svg>
-					<span class="text-md"><?php echo esc_html( $expertise_name ); ?></span>
-				</div>
+
+
+
+<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
+
+	<svg class="aspect-square h-6 fill-current mr-3" aria-hidden="true"><use xlink:href="#exp-<?php echo sanitize_title( $expertise_name ); ?>"></use></svg>
+	<span class="text-md pl-4 border-l "><?php echo esc_html( $expertise_name ); ?></span>
+</div>
+
+
 			<?php endif; ?>
 
 <h1 class="wp-block-heading has-text-align-<?php echo esc_attr( $text_align ); ?> has-<?php echo esc_attr( $font_size_class ); ?>-font-size text-balance " style="font-weight:500;line-height:1">
