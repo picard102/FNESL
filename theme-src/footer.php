@@ -1,6 +1,7 @@
 </main><!-- #site-content -->
 
 <div class=" max-w-[1800px] mx-auto p-2 ">
+
 <footer class="bg-primary-700 mt-12 relative overflow-hidden rounded-md isolate" id="site-footer" role="contentinfo">
 
 
@@ -19,10 +20,20 @@
 
 
 <?php
-$affiliations = get_posts([
-  'post_type'   => 'affiliation',
-  'numberposts' => -1,
-]);
+$affiliations = get_posts( array(
+	'post_type'      => 'affiliation', // <-- your CPT slug
+	'post_status'    => 'publish',
+	'posts_per_page' => -1,
+	'orderby'        => 'title',
+	'order'          => 'ASC',
+	'tax_query'      => array(
+		array(
+			'taxonomy' => 'placement', // <-- your taxonomy slug
+			'field'    => 'slug',
+			'terms'    => array( 'footer' ), // <-- term slug
+		),
+	),
+) );
 
 // Randomize order
 shuffle($affiliations);

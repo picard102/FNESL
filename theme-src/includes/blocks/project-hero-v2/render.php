@@ -73,7 +73,7 @@ switch ( $blur_level ) {
 
 
 
-<div class="relative mx-auto px-2 project-hero alignfull  ">
+<div class="relative mx-auto project-hero alignfull  ">
 
 
 	<?php if ( $background_image ) :
@@ -89,7 +89,7 @@ switch ( $blur_level ) {
 
 <div class="max-w-[1800px] mx-auto p-2">
 
-	<div class="  bg-primary-500  text-white rounded-md h-[85dvh] max-h-[800px]  justify-between flex flex-col isolate mx-auto
+	<div class="  bg-primary-500  text-white rounded-md h-[85dvh] max-h-[600px]  justify-between flex flex-col isolate mx-auto
 
 	 relative overflow-hidden    " style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;">
 

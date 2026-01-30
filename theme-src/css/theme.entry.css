@@ -339,3 +339,11 @@ body:has(.project-hero) .site-banner {
 .affiliation-logo svg [stroke]:not([stroke="none"]):not([stroke^="url("]) {
   stroke: currentColor !important;
 }
+
+.fnesl-blur-sm {
+  filter: blur(4px);
+}
+
+.fnesl-blur-xs {
+  filter: blur(2px);
+}

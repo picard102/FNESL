@@ -223,3 +223,37 @@ function tpe_logo_width_percent_from_ratio( float $r ): float {
 
 
 
+
+
+
+
+
+
+// Register Award Taxonomy
+add_action('init', function () {
+    $labels = [
+        'name'              => __('Placement', 'fnesl'),
+        'singular_name'     => __('Placement', 'fnesl'),
+        'search_items'      => __('Search Placements', 'fnesl'),
+        'all_items'         => __('All Placements', 'fnesl'),
+        'parent_item'       => __('Parent Placement', 'fnesl'),
+        'parent_item_colon' => __('Parent Placement:', 'fnesl'),
+        'edit_item'         => __('Edit Placements', 'fnesl'),
+        'update_item'       => __('Update Placement', 'fnesl'),
+        'add_new_item'      => __('Add New Placement', 'fnesl'),
+        'new_item_name'     => __('New Placement Name', 'fnesl'),
+        'menu_name'         => __('Placement', 'fnesl'),
+    ];
+
+    $args = [
+        'hierarchical'      => false,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => false,
+        'query_var'         => true,
+        'rewrite'           => ['slug' => 'placement'],
+        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
+    ];
+
+    register_taxonomy('placement', ['affiliation'], $args);
+});
