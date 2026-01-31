@@ -4,6 +4,7 @@
 require_once __DIR__ . '/includes/cpt-projects.php';
 require_once __DIR__ . '/includes/cpt-profiles.php';
 require_once __DIR__ . '/includes/cpt-affiliations.php';
+require_once __DIR__ . '/includes/settings.php';
 require_once get_template_directory() . '/includes/assets.php';
 
 add_action('init', function () {

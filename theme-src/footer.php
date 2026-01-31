@@ -174,35 +174,76 @@ text-md text-white ">
 
 
 
+<?php
 
-<div class="flex flex-col gap-4 text-xs  col-span-4 border-t py-6 border-primary-600
+$opt = get_option(
+		'theme_footer_settings',
+		array(
+			'contact_rows' => array(),
+			'social_links' => array(),
+		)
+	);
 
-grid grid-cols-[auto_1fr] gap-x-6
+	if ( ! is_array( $opt ) ) {
+		$opt = array();
+	}
 
-">
+	$opt['contact_rows'] = ( isset( $opt['contact_rows'] ) && is_array( $opt['contact_rows'] ) ) ? $opt['contact_rows'] : array();
+	$opt['social_links'] = ( isset( $opt['social_links'] ) && is_array( $opt['social_links'] ) ) ? $opt['social_links'] : array();
 
-		<span>Phone</span>
-		<span itemprop="telephone" class="text-white">+1 (519) 445-2220</span>
 
-		<span>Fax</span>
-		<span itemprop="faxNumber" class="text-white">+1 (519) 445-2224</span>
 
-		<span>Mailing Address</span>
-	<address class="not-italic text-white" itemscope="" itemtype="https://schema.org/PostalAddress">
-		<span itemprop="postOfficeBoxNumber">PO Box 280</span><br>
-		<span itemprop="addressLocality">Ohsweken</span>,
-		<span itemprop="addressRegion">Ontario</span><br>
-		<span itemprop="postalCode">N0A 1M0</span>
-	</address>
 
-		<span>Delivery Address</span>
-	<address class="not-italic text-white" itemscope="" itemtype="https://schema.org/PostalAddress">
 
-		<span itemprop="streetAddress">1786 Chiefswood Rd</span><br>
-		<span itemprop="addressLocality">Ohsweken</span>,
-		<span itemprop="addressRegion">Ontario</span><br>
-		<span itemprop="postalCode">N0A 1M0</span>
-	</address>
+
+
+?>
+
+
+<div class="flex flex-col gap-4 text-sm  col-span-4 border-t py-6 border-primary-600 grid grid-cols-[auto_1fr] gap-x-6">
+
+
+<?php
+
+	$rows = $opt['contact_rows'];
+
+	$has_any = false;
+	foreach ( $rows as $row ) {
+		$label = isset( $row['label'] ) ? trim( (string) $row['label'] ) : '';
+		$value = isset( $row['value'] ) ? trim( (string) $row['value'] ) : '';
+		if ( $label !== '' || $value !== '' ) {
+			$has_any = true;
+			break;
+		}
+	}
+
+	if ( ! $has_any ) {
+		return;
+	}
+
+
+	foreach ( $rows as $row ) {
+		$label = isset( $row['label'] ) ? trim( (string) $row['label'] ) : '';
+		$value = isset( $row['value'] ) ? trim( (string) $row['value'] ) : '';
+
+		if ( $label === '' && $value === '' ) {
+			continue;
+		}
+
+		if ( $label !== '' ) {
+			echo '<span>' . esc_html( $label ) . '</span>';
+		}
+
+		if ( $value !== '' ) {
+			echo '<span itemprop="telephone" class="text-white">' . nl2br( esc_html( $value ) ) . '</span>';
+		}
+
+	}
+
+
+	?>
+
+
 </div>
 
 </div>
@@ -214,24 +255,42 @@ grid grid-cols-[auto_1fr] gap-x-6
 
 
 	<div class="flex gap-4 ">
-		<a href="" class="flex bg-primary-600 hover:bg-primary-800
-	transition-colors duration-300 ease-in-out p-2 rounded ">
-		<svg class=" aspect-square  h-6 fill-current  inline " aria-hidden="true">
-		<use xlink:href="#icons_linkedin"></use>
-		</svg>
-		</a>
 
-		<a href="" class="flex bg-primary-600  p-2 rounded ">
-		<svg class=" aspect-square  h-6 fill-current  inline " aria-hidden="true">
-		<use xlink:href="#icons_instagram"></use>
-		</svg>
-		</a>
+<?php
 
-		<a href="" class="flex bg-primary-600  p-2 rounded ">
-		<svg class=" aspect-square  h-6 fill-current  inline " aria-hidden="true">
-		<use xlink:href="#icons_youtube"></use>
-		</svg>
-		</a>
+
+$links = $opt['social_links'];
+
+
+
+	foreach ( $links as $row ) {
+
+		$network = isset( $row['network'] ) ? sanitize_key( (string) $row['network'] ) : '';
+		$url     = isset( $row['url'] ) ? trim( (string) $row['url'] ) : '';
+
+		if ( $url === '' ) {
+			continue;
+		}
+
+		$label = $network;
+
+		echo '<a class="flex bg-primary-600 hover:bg-primary-800
+		transition-colors duration-300 ease-in-out p-2 rounded" href="' . esc_url( $url ) . '" target="_blank" rel="noopener" aria-label="' . esc_attr( $label ) . '">';
+
+
+			echo '		<svg class=" aspect-square  h-6 fill-current  inline " aria-hidden="true">
+			<use xlink:href="#icons_' . esc_html( $label ) . '"></use>
+			</svg>';
+			echo '<span class="screen-reader-text">' . esc_html( $label ) . '</span>';
+
+
+		echo '</a>';
+
+	}
+
+
+
+?>
 
 
 	</div>
