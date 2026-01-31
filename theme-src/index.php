@@ -4,8 +4,15 @@ get_header();
 
 
 <?php if ( ! has_block( 'fnesl/home-hero' ) ) {
-      get_template_part( 'parts/menu', null, null );
-}
+
+								get_template_part(
+						'parts/menu',
+							null,
+							[
+								'variant'      => 'transparent',
+							]
+						);
+		}
       ?>
 
 

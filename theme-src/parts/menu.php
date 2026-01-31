@@ -1,4 +1,8 @@
-<div class="container">
+<?php
+$variant  = $args['variant'] ?? 'default';
+?>
+
+<div class="container text-<?php echo esc_attr( 'default' === $variant ? '' : 'primary-700 pt-2' ); ?> ">
 <div class="border-b-current border-b mb-12 pt-3 pb-3  flex items-center ">
 
 <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="flex gap-4 items-center  group
