@@ -5,8 +5,14 @@ get_header();
 
 	<?php
   // Optional top banner (block template part)
+	get_template_part(
+		'parts/menu',
+			null,
+			[
+				'variant'      => 'transparent',
+			]
+		);
 
-      get_template_part( 'parts/menu', null, null );
       ?>
 
 <main class="wp-site-blocks ">
