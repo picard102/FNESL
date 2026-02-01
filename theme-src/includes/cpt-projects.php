@@ -325,13 +325,57 @@ add_action( 'rest_api_init', function () {
 			$q = new WP_Query( $args );
 
 			$projects = [];
+
 			if ( $q->have_posts() ) {
 				foreach ( $q->posts as $p ) {
+					$post_id = (int) $p->ID;
+
+					// ---------------------------------------
+					// Expertise: selected term OR first assigned
+					// ---------------------------------------
+					$selected_expertise = (int) get_post_meta( $post_id, 'selected_expertise', true ); // <-- swap to your real source
+					if ( ! $selected_expertise ) {
+						$selected_expertise = null;
+					}
+
+					// get first assigned expertise if auto
+					if ( ! $selected_expertise ) {
+						$expertise_terms = get_the_terms( $post_id, 'expertise' );
+						if ( $expertise_terms && ! is_wp_error( $expertise_terms ) ) {
+							$selected_expertise = $expertise_terms[0]->term_id ?? null;
+						}
+					}
+
+					$expertise_name = '';
+					$expertise_slug = '';
+
+					if ( $selected_expertise ) {
+						$term = get_term( $selected_expertise );
+						if ( $term && ! is_wp_error( $term ) ) {
+							$expertise_name = html_entity_decode(
+								$term->name,
+								ENT_QUOTES | ENT_HTML5,
+								'UTF-8'
+							);
+							$expertise_slug = (string) $term->slug;
+						}
+					}
+
+					// ---------------------------------------
+					// Project payload
+					// ---------------------------------------
 					$projects[] = [
-						'id'    => (int) $p->ID,
-						'title' => (string) get_the_title( $p->ID ),
-						'link'  => (string) get_permalink( $p->ID ),
-						'image' => (string) get_the_post_thumbnail_url( $p->ID, 'large' ),
+						'id'            => $post_id,
+						'title'         => html_entity_decode(
+							get_the_title( $post_id ),
+							ENT_QUOTES | ENT_HTML5,
+							'UTF-8'
+						),
+						'link'          => (string) get_permalink( $post_id ),
+						'image'         => (string) get_the_post_thumbnail_url( $post_id, 'large' ),
+						'expertiseId'   => $selected_expertise ? (int) $selected_expertise : null,
+						'expertiseName' => (string) $expertise_name,
+						'expertiseSlug' => (string) $expertise_slug,
 					];
 				}
 			}
