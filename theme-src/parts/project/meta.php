@@ -50,36 +50,36 @@ if (
 ?>
 <aside class="project-meta space-y-8 has-sm-font-size">
 
-	<?php if ( ! empty( $expertise_terms ) ) : ?>
+<?php
+if ( ! empty( $expertise_terms ) ) :
+	$expertise_rows = [];
+
+	foreach ( $expertise_terms as $term ) {
+		if ( ! $term || is_wp_error( $term ) ) continue;
+
+		$svg = fnesl_inline_expertise_term_svg( $term, 'aspect-square h-7 w-7 fill-current text-primary-400' );
+		if ( ! $svg ) continue;
+
+		$expertise_rows[] = [
+			'svg'  => $svg,
+			'name' => $term->name,
+		];
+	}
+
+	if ( ! empty( $expertise_rows ) ) : ?>
 		<div class="project-meta-expertise flex flex-col">
 			<h3 class="font-serif text-sm mb-3">Expertise:</h3>
-			<?php
-			foreach ( $expertise_terms as $term ) :
-				if ( ! $term || is_wp_error( $term ) ) {
-					continue;
-				}
 
-				// Get top-level parent for icon reference
-				$parent = $term;
-				while ( $parent->parent ) {
-					$maybe_parent = get_term( $parent->parent, 'expertise' );
-					if ( ! $maybe_parent || is_wp_error( $maybe_parent ) ) {
-						break;
-					}
-					$parent = $maybe_parent;
-				}
-
-				$icon_id = sanitize_title( $parent->name ?? $term->name );
-				?>
+			<?php foreach ( $expertise_rows as $row ) : ?>
 				<div class="flex items-center gap-2 mb-2">
-					<svg class="aspect-square h-7 fill-primary-400" aria-hidden="true">
-						<use xlink:href="#exp-<?php echo esc_attr( $icon_id ); ?>"></use>
-					</svg>
-					<span class="font-semi font-sans"><?php echo esc_html( $term->name ); ?></span>
+					<?php echo $row['svg']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<span class="font-semi font-sans"><?php echo esc_html( $row['name'] ); ?></span>
 				</div>
 			<?php endforeach; ?>
 		</div>
-	<?php endif; ?>
+	<?php endif;
+endif;
+?>
 
 	<?php if ( ! empty( $client_terms ) ) : ?>
 		<div class="project-meta-client">

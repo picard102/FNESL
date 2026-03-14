@@ -68,8 +68,8 @@ if ( 'select' === $featured_mode && $featured_id > 0 ) {
 $project_title  = '';
 $project_url    = '';
 $project_img    = '';
+$expertise_term = null;
 $expertise_name = '';
-$expertise_slug = '';
 
 if ( $project_id ) {
 	$project_title = (string) get_the_title( $project_id );
@@ -80,12 +80,13 @@ if ( $project_id ) {
 		$project_img = (string) wp_get_attachment_image_url( $thumb_id, 'large' );
 	}
 
+
 	$terms = get_the_terms( $project_id, 'expertise' );
 	if ( $terms && ! is_wp_error( $terms ) ) {
 		$first = $terms[0] ?? null;
-		if ( $first ) {
+		if ( $first && ! is_wp_error( $first ) ) {
+			$expertise_term = $first;
 			$expertise_name = (string) $first->name;
-			$expertise_slug = sanitize_title( $first->name );
 		}
 	}
 }
@@ -151,14 +152,20 @@ $has_inner = (bool) strlen( trim( (string) $content ) );
 							</div>
 
 							<div class="p-3 col-start-1 row-start-3 row-end-3 flex flex-col isolate  text-primary-600 items-start ">
-								<?php if ( $expertise_name ) : ?>
-									<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
-										<svg class="aspect-square h-4 fill-current mr-2" aria-hidden="true">
-											<use xlink:href="#exp-<?php echo esc_attr( $expertise_slug ); ?>"></use>
-										</svg>
-										<span class="text-xs pl-2 border-l "><?php echo esc_html( $expertise_name ); ?></span>
-									</div>
-								<?php endif; ?>
+<?php
+$expertise_svg = '';
+if ( $expertise_term ) {
+	// Uses term icon meta + parent fallback. Returns '' if none found.
+	$expertise_svg = fnesl_inline_expertise_term_svg( $expertise_term, 'aspect-square h-4 w-4 fill-current mr-2 text-primary-600' );
+}
+?>
+
+<?php if ( $expertise_svg && $expertise_name ) : ?>
+	<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
+		<?php echo $expertise_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<span class="text-xs pl-2 border-l"><?php echo esc_html( $expertise_name ); ?></span>
+	</div>
+<?php endif; ?>
 
 								<h3 class="text-balance text-xl font-medium leading-tight">
 									<?php echo esc_html( $project_title ); ?>

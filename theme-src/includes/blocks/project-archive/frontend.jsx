@@ -115,7 +115,7 @@ function App({ config }) {
         </div>
       ) : null}
 
-      <div className="grid gap-4 grid-cols-3">
+      <div className="grid gap-4 grid-cols-4">
         {archive.projects.map((p) => (
           <ProjectCard key={p.id} project={p} />
         ))}

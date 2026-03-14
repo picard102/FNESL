@@ -1,244 +1,241 @@
 <?php
 /**
- * Register "Projects" Custom Post Type
+ * Register "Projects" Custom Post Type + Taxonomies
+ * + Project Archive REST endpoint (with expertise term icon support + parent fallback)
  */
+
+add_action('init', function () {
+	$labels = [
+		'name'               => __('Projects', 'fnesl'),
+		'singular_name'      => __('Project', 'fnesl'),
+		'menu_name'          => __('Projects', 'fnesl'),
+		'name_admin_bar'     => __('Project', 'fnesl'),
+		'add_new'            => __('Add New', 'fnesl'),
+		'add_new_item'       => __('Add New Project', 'fnesl'),
+		'new_item'           => __('New Project', 'fnesl'),
+		'edit_item'          => __('Edit Project', 'fnesl'),
+		'view_item'          => __('View Project', 'fnesl'),
+		'all_items'          => __('All Projects', 'fnesl'),
+		'search_items'       => __('Search Projects', 'fnesl'),
+		'parent_item_colon'  => __('Parent Projects:', 'fnesl'),
+		'not_found'          => __('No projects found.', 'fnesl'),
+		'not_found_in_trash' => __('No projects found in Trash.', 'fnesl'),
+	];
+
+	$args = [
+		'labels'             => $labels,
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'query_var'          => true,
+		'rewrite'            => ['slug' => 'projects'],
+		'capability_type'    => 'post',
+		'has_archive'        => true,
+		'hierarchical'       => false,
+		'menu_position'      => 5,
+		'menu_icon'          => 'dashicons-portfolio',
+		'supports'           => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'],
+		'show_in_rest'       => true,
+		'show_in_nav_menus'  => true,
+
+		'template' => [
+			[
+				'fnesl/project-hero-v2',
+				[
+					'showOverlay' => true,
+					'fontSize'    => '3xl',
+				],
+			],
+			[
+				'core/paragraph',
+				[
+					'content'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
+					'textColor'   => 'primary',
+					'fontSize'    => 'lg',
+					'fontFamily'  => 'ibm-plex-serif',
+				],
+			],
+			[
+				'core/paragraph',
+				[
+					'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.',
+				],
+			],
+		],
+	];
+
+	register_post_type('project', $args);
+});
+
+require_once __DIR__ . '/expertise-taxonomy.php';
+
+// -----------------------------
+// Client taxonomy
+// -----------------------------
+add_action('init', function () {
+	$labels = [
+		'name'              => __('Client', 'fnesl'),
+		'singular_name'     => __('Client', 'fnesl'),
+		'search_items'      => __('Search Clients', 'fnesl'),
+		'all_items'         => __('All Clients', 'fnesl'),
+		'parent_item'       => __('Parent Client', 'fnesl'),
+		'parent_item_colon' => __('Parent Client:', 'fnesl'),
+		'edit_item'         => __('Edit Clients', 'fnesl'),
+		'update_item'       => __('Update Client', 'fnesl'),
+		'add_new_item'      => __('Add New Client', 'fnesl'),
+		'new_item_name'     => __('New Client Name', 'fnesl'),
+		'menu_name'         => __('Client', 'fnesl'),
+	];
+
+	$args = [
+		'hierarchical'      => false,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => false,
+		'query_var'         => true,
+		'rewrite'           => ['slug' => 'client'],
+		'show_in_rest'      => true,
+	];
+
+	register_taxonomy('client', ['project'], $args);
+});
+
+// -----------------------------
+// Location taxonomy
+// -----------------------------
+add_action('init', function () {
+	$labels = [
+		'name'              => __('Location', 'fnesl'),
+		'singular_name'     => __('Location', 'fnesl'),
+		'search_items'      => __('Search Locations', 'fnesl'),
+		'all_items'         => __('All Locations', 'fnesl'),
+		'parent_item'       => __('Parent Location', 'fnesl'),
+		'parent_item_colon' => __('Parent Location:', 'fnesl'),
+		'edit_item'         => __('Edit Locations', 'fnesl'),
+		'update_item'       => __('Update Location', 'fnesl'),
+		'add_new_item'      => __('Add New Location', 'fnesl'),
+		'new_item_name'     => __('New Location Name', 'fnesl'),
+		'menu_name'         => __('Location', 'fnesl'),
+	];
+
+	$args = [
+		'hierarchical'      => true,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => false,
+		'query_var'         => true,
+		'rewrite'           => ['slug' => 'location'],
+		'show_in_rest'      => true,
+	];
+
+	register_taxonomy('location', ['project'], $args);
+});
+
+// -----------------------------
+// Partners taxonomy
+// -----------------------------
+add_action('init', function () {
+	$labels = [
+		'name'              => __('Partners', 'fnesl'),
+		'singular_name'     => __('Partners', 'fnesl'),
+		'search_items'      => __('Search Partners', 'fnesl'),
+		'all_items'         => __('All Partners', 'fnesl'),
+		'parent_item'       => __('Parent Partners', 'fnesl'),
+		'parent_item_colon' => __('Parent Partners:', 'fnesl'),
+		'edit_item'         => __('Edit Partners', 'fnesl'),
+		'update_item'       => __('Update Partners', 'fnesl'),
+		'add_new_item'      => __('Add New Partners', 'fnesl'),
+		'new_item_name'     => __('New Partners Name', 'fnesl'),
+		'menu_name'         => __('Partners', 'fnesl'),
+	];
+
+	$args = [
+		'hierarchical'      => false,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => false,
+		'query_var'         => true,
+		'rewrite'           => ['slug' => 'partners'],
+		'show_in_rest'      => true,
+	];
+
+	register_taxonomy('partners', ['project'], $args);
+});
+
+// -----------------------------
+// Award taxonomy (NOTE: singular "award")
+// -----------------------------
+add_action('init', function () {
+	$labels = [
+		'name'              => __('Award', 'fnesl'),
+		'singular_name'     => __('Award', 'fnesl'),
+		'search_items'      => __('Search Awards', 'fnesl'),
+		'all_items'         => __('All Awards', 'fnesl'),
+		'parent_item'       => __('Parent Award', 'fnesl'),
+		'parent_item_colon' => __('Parent Award:', 'fnesl'),
+		'edit_item'         => __('Edit Awards', 'fnesl'),
+		'update_item'       => __('Update Award', 'fnesl'),
+		'add_new_item'      => __('Add New Award', 'fnesl'),
+		'new_item_name'     => __('New Award Name', 'fnesl'),
+		'menu_name'         => __('Award', 'fnesl'),
+	];
+
+	$args = [
+		'hierarchical'      => false,
+		'labels'            => $labels,
+		'show_ui'           => true,
+		'show_admin_column' => false,
+		'query_var'         => true,
+		'rewrite'           => ['slug' => 'award'],
+		'show_in_rest'      => true,
+	];
+
+	register_taxonomy('award', ['project'], $args);
+});
 
 /**
- * Registers the 'project' custom post type for Projects.
- *
- * - Sets up labels for admin UI and REST API.
- * - Enables support for title, editor, thumbnail, excerpt, and custom fields.
- * - Makes the post type publicly queryable, with archive and REST API support.
- * - Uses 'projects' as the URL slug and displays in the admin menu with a portfolio icon.
- *
- * @see https://developer.wordpress.org/reference/functions/register_post_type/
+ * Resolve a term icon (SVG attachment) with parent fallback.
+ * Returns null or: [ 'attachmentId' => int, 'url' => string, 'termId' => int ]
  */
-add_action('init', function () {
-    $labels = [
-        'name'               => __('Projects', 'fnesl'),
-        'singular_name'      => __('Project', 'fnesl'),
-        'menu_name'          => __('Projects', 'fnesl'),
-        'name_admin_bar'     => __('Project', 'fnesl'),
-        'add_new'            => __('Add New', 'fnesl'),
-        'add_new_item'       => __('Add New Project', 'fnesl'),
-        'new_item'           => __('New Project', 'fnesl'),
-        'edit_item'          => __('Edit Project', 'fnesl'),
-        'view_item'          => __('View Project', 'fnesl'),
-        'all_items'          => __('All Projects', 'fnesl'),
-        'search_items'       => __('Search Projects', 'fnesl'),
-        'parent_item_colon'  => __('Parent Projects:', 'fnesl'),
-        'not_found'          => __('No projects found.', 'fnesl'),
-        'not_found_in_trash' => __('No projects found in Trash.', 'fnesl'),
-    ];
+function fnesl_resolve_term_icon( $term, $taxonomy = 'expertise', $meta_key = 'fnesl_term_icon_svg_id' ) {
+	if ( is_numeric( $term ) ) {
+		$term = get_term( (int) $term, $taxonomy );
+	}
+	if ( ! $term || is_wp_error( $term ) ) return null;
 
-    $args = [
-        'labels'             => $labels,
-        'public'             => true,
-        'publicly_queryable' => true,
-        'show_ui'            => true,
-        'show_in_menu'       => true,
-        'query_var'          => true,
-        'rewrite'            => ['slug' => 'projects'],
-        'capability_type'    => 'post',
-        'has_archive'        => true,
-        'hierarchical'       => false,
-        'menu_position'      => 5,
-        'menu_icon'          => 'dashicons-portfolio',
-				'supports' => ['title', 'editor', 'thumbnail', 'excerpt', 'custom-fields', 'page-attributes'],
-				'show_in_rest'       => true, // ✅ enables Gutenberg + REST API
-				'show_in_nav_menus'  => true,
+	$seen = [];
 
-				'template' => [
-					[
-					'fnesl/project-hero-v2',
-					[
-						'showOverlay'    => true,
-						'fontSize'       => '3xl',
-					],
-					],
-					[
-						'core/paragraph',
-						[
-							'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
-							'textColor' => 'primary',
-							'fontSize'  => 'lg',
-							'textColor'   => 'primary',
-							'fontFamily'  => 'ibm-plex-serif',
-						],
-					],
-					[
-						'core/paragraph',
-						[
-							'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.',
-						],
-					],
+	while ( $term && ! is_wp_error( $term ) ) {
+		if ( isset( $seen[ $term->term_id ] ) ) break;
+		$seen[ $term->term_id ] = true;
 
+		$icon_id = (int) get_term_meta( $term->term_id, $meta_key, true );
 
+		if ( $icon_id ) {
+			$url  = wp_get_attachment_url( $icon_id );
+			$mime = get_post_mime_type( $icon_id );
 
+			if ( $url && $mime === 'image/svg+xml' ) {
+				return [
+					'attachmentId' => $icon_id,
+					'url'          => (string) $url,
+					'termId'       => (int) $term->term_id,
+				];
+			}
+		}
 
-				],
+		$parent_id = (int) $term->parent;
+		if ( $parent_id > 0 ) {
+			$term = get_term( $parent_id, $taxonomy );
+			continue;
+		}
 
-    ];
+		break;
+	}
 
-    register_post_type('project', $args);
-});
-
-
-// Register Expertise Taxonomy
-add_action('init', function () {
-    $labels = [
-        'name'              => __('Expertise', 'fnesl'),
-        'singular_name'     => __('Expertise', 'fnesl'),
-        'search_items'      => __('Search Expertise', 'fnesl'),
-        'all_items'         => __('All Expertise', 'fnesl'),
-        'parent_item'       => __('Parent Expertise', 'fnesl'),
-        'parent_item_colon' => __('Parent Expertise:', 'fnesl'),
-        'edit_item'         => __('Edit Expertise', 'fnesl'),
-        'update_item'       => __('Update Expertise', 'fnesl'),
-        'add_new_item'      => __('Add New Expertise', 'fnesl'),
-        'new_item_name'     => __('New Expertise Name', 'fnesl'),
-        'menu_name'         => __('Expertise', 'fnesl'),
-    ];
-
-    $args = [
-        'hierarchical'      => true, // acts like categories (true) vs tags (false)
-        'labels'            => $labels,
-        'show_ui'           => true,
-        'show_admin_column' => true,
-        'query_var'         => true,
-        'rewrite'           => ['slug' => 'expertise'],
-        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
-    ];
-
-    register_taxonomy('expertise', ['project'], $args);
-});
-
-
-
-
-// Register Client Taxonomy
-add_action('init', function () {
-    $labels = [
-        'name'              => __('Client', 'fnesl'),
-        'singular_name'     => __('Client', 'fnesl'),
-        'search_items'      => __('Search Clients', 'fnesl'),
-        'all_items'         => __('All Clients', 'fnesl'),
-        'parent_item'       => __('Parent Client', 'fnesl'),
-        'parent_item_colon' => __('Parent Client:', 'fnesl'),
-        'edit_item'         => __('Edit Clients', 'fnesl'),
-        'update_item'       => __('Update Client', 'fnesl'),
-        'add_new_item'      => __('Add New Client', 'fnesl'),
-        'new_item_name'     => __('New Client Name', 'fnesl'),
-        'menu_name'         => __('Client', 'fnesl'),
-    ];
-
-    $args = [
-        'hierarchical'      => false,
-        'labels'            => $labels,
-        'show_ui'           => true,
-        'show_admin_column' => false,
-        'query_var'         => true,
-        'rewrite'           => ['slug' => 'client'],
-        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
-    ];
-
-    register_taxonomy('client', ['project'], $args);
-});
-
-
-
-// Register Location Taxonomy
-add_action('init', function () {
-    $labels = [
-        'name'              => __('Location', 'fnesl'),
-        'singular_name'     => __('Location', 'fnesl'),
-        'search_items'      => __('Search Locations', 'fnesl'),
-        'all_items'         => __('All Locations', 'fnesl'),
-        'parent_item'       => __('Parent Location', 'fnesl'),
-        'parent_item_colon' => __('Parent Location:', 'fnesl'),
-        'edit_item'         => __('Edit Locations', 'fnesl'),
-        'update_item'       => __('Update Location', 'fnesl'),
-        'add_new_item'      => __('Add New Location', 'fnesl'),
-        'new_item_name'     => __('New Location Name', 'fnesl'),
-        'menu_name'         => __('Location', 'fnesl'),
-    ];
-
-    $args = [
-        'hierarchical'      => true,
-        'labels'            => $labels,
-        'show_ui'           => true,
-        'show_admin_column' => false,
-        'query_var'         => true,
-        'rewrite'           => ['slug' => 'location'],
-        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
-    ];
-
-    register_taxonomy('location', ['project'], $args);
-});
-
-
-
-// Register Partners Taxonomy
-add_action('init', function () {
-    $labels = [
-        'name'              => __('Partners', 'fnesl'),
-        'singular_name'     => __('Partners', 'fnesl'),
-        'search_items'      => __('Search Partners', 'fnesl'),
-        'all_items'         => __('All Partners', 'fnesl'),
-        'parent_item'       => __('Parent Partners', 'fnesl'),
-        'parent_item_colon' => __('Parent Partners:', 'fnesl'),
-        'edit_item'         => __('Edit Partners', 'fnesl'),
-        'update_item'       => __('Update Partners', 'fnesl'),
-        'add_new_item'      => __('Add New Partners', 'fnesl'),
-        'new_item_name'     => __('New Partners Name', 'fnesl'),
-        'menu_name'         => __('Partners', 'fnesl'),
-    ];
-
-    $args = [
-        'hierarchical'      => false,
-        'labels'            => $labels,
-        'show_ui'           => true,
-        'show_admin_column' => false,
-        'query_var'         => true,
-        'rewrite'           => ['slug' => 'partners'],
-        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
-    ];
-
-    register_taxonomy('partners', ['project'], $args);
-});
-
-
-// Register Award Taxonomy
-add_action('init', function () {
-    $labels = [
-        'name'              => __('Award', 'fnesl'),
-        'singular_name'     => __('Award', 'fnesl'),
-        'search_items'      => __('Search Awards', 'fnesl'),
-        'all_items'         => __('All Awards', 'fnesl'),
-        'parent_item'       => __('Parent Award', 'fnesl'),
-        'parent_item_colon' => __('Parent Award:', 'fnesl'),
-        'edit_item'         => __('Edit Awards', 'fnesl'),
-        'update_item'       => __('Update Award', 'fnesl'),
-        'add_new_item'      => __('Add New Award', 'fnesl'),
-        'new_item_name'     => __('New Award Name', 'fnesl'),
-        'menu_name'         => __('Award', 'fnesl'),
-    ];
-
-    $args = [
-        'hierarchical'      => false,
-        'labels'            => $labels,
-        'show_ui'           => true,
-        'show_admin_column' => false,
-        'query_var'         => true,
-        'rewrite'           => ['slug' => 'award'],
-        'show_in_rest'      => true, // ✅ makes taxonomy Gutenberg + REST friendly
-    ];
-
-    register_taxonomy('award', ['project'], $args);
-});
-
-
-
+	return null;
+}
 
 /**
  * Single JSON endpoint for Project Archive (filters + projects + pagination)
@@ -249,9 +246,9 @@ add_action('init', function () {
  *   "page": 1,
  *   "perPage": 12,
  *   "mode": "and" | "or",
- *   "terms": { "expertise":[1,2], "partners":[...], "location":[...], "client":[...], "awards":[...] },
- *   "show": ["expertise","partners","location","client","awards"],   // optional; used to limit filters returned
- *   "includeFilters": true | false                                  // optional; default true
+ *   "terms": { "expertise":[1,2], "partners":[...], "location":[...], "client":[...], "award":[...] },
+ *   "show": ["expertise","partners","location","client","award"],     // optional; used to limit filters returned
+ *   "includeFilters": true | false                                   // optional; default true
  * }
  */
 add_action( 'rest_api_init', function () {
@@ -261,10 +258,11 @@ add_action( 'rest_api_init', function () {
 		'permission_callback' => '__return_true',
 		'callback'            => function ( WP_REST_Request $req ) {
 
-			$allowed_tax = [ 'expertise', 'partners', 'location', 'client', 'awards' ];
+			$allowed_tax = [ 'expertise', 'partners', 'location', 'client', 'award' ];
 
 			// --- Inputs ---
 			$page    = max( 1, (int) $req->get_param( 'page' ) );
+
 			$perPage = (int) $req->get_param( 'perPage' );
 			$perPage = max( 1, min( 100, $perPage > 0 ? $perPage : 12 ) );
 
@@ -308,7 +306,7 @@ add_action( 'rest_api_init', function () {
 				'posts_per_page'      => $perPage,
 				'paged'               => $page,
 
-				// ✅ Featured image required: accurate totals/pagination
+				// Featured image required: accurate totals/pagination
 				'meta_query'          => [
 					[
 						'key'     => '_thumbnail_id',
@@ -330,40 +328,44 @@ add_action( 'rest_api_init', function () {
 				foreach ( $q->posts as $p ) {
 					$post_id = (int) $p->ID;
 
+					// Defaults (stable payload)
+					$selected_expertise = 0;
+					$expertise_name     = '';
+					$expertise_slug     = '';
+					$expertise_icon     = null;
+
 					// ---------------------------------------
 					// Expertise: selected term OR first assigned
 					// ---------------------------------------
-					$selected_expertise = (int) get_post_meta( $post_id, 'selected_expertise', true ); // <-- swap to your real source
-					if ( ! $selected_expertise ) {
-						$selected_expertise = null;
-					}
+					$selected_expertise = (int) get_post_meta( $post_id, 'selected_expertise', true );
+					if ( ! $selected_expertise ) $selected_expertise = 0;
 
-					// get first assigned expertise if auto
 					if ( ! $selected_expertise ) {
 						$expertise_terms = get_the_terms( $post_id, 'expertise' );
 						if ( $expertise_terms && ! is_wp_error( $expertise_terms ) ) {
-							$selected_expertise = $expertise_terms[0]->term_id ?? null;
+							$selected_expertise = (int) ( $expertise_terms[0]->term_id ?? 0 );
 						}
 					}
 
-					$expertise_name = '';
-					$expertise_slug = '';
-
 					if ( $selected_expertise ) {
-						$term = get_term( $selected_expertise );
-						if ( $term && ! is_wp_error( $term ) ) {
+						$expertise_term = get_term( $selected_expertise, 'expertise' );
+
+						if ( $expertise_term && ! is_wp_error( $expertise_term ) ) {
 							$expertise_name = html_entity_decode(
-								$term->name,
+								(string) $expertise_term->name,
 								ENT_QUOTES | ENT_HTML5,
 								'UTF-8'
 							);
-							$expertise_slug = (string) $term->slug;
+							$expertise_slug = (string) $expertise_term->slug;
+
+							$expertise_icon = fnesl_resolve_term_icon(
+								$expertise_term,
+								'expertise',
+								'fnesl_term_icon_svg_id'
+							);
 						}
 					}
 
-					// ---------------------------------------
-					// Project payload
-					// ---------------------------------------
 					$projects[] = [
 						'id'            => $post_id,
 						'title'         => html_entity_decode(
@@ -376,6 +378,7 @@ add_action( 'rest_api_init', function () {
 						'expertiseId'   => $selected_expertise ? (int) $selected_expertise : null,
 						'expertiseName' => (string) $expertise_name,
 						'expertiseSlug' => (string) $expertise_slug,
+						'expertiseIcon' => $expertise_icon, // null or { attachmentId, url, termId }
 					];
 				}
 			}
@@ -403,16 +406,25 @@ add_action( 'rest_api_init', function () {
 
 					if ( is_wp_error( $terms ) || empty( $terms ) ) continue;
 
-					$filters[ $tax ] = array_map( function ( $t ) {
+					$mapped = array_map( function ( $t ) use ( $tax ) {
+						$icon = null;
+
+						if ( $tax === 'expertise' ) {
+							$icon = fnesl_resolve_term_icon( $t, 'expertise', 'fnesl_term_icon_svg_id' );
+						}
+
 						return [
-							'id'   => (int) $t->term_id,
-							'name' => (string) $t->name,
-							'slug' => (string) $t->slug,
-							'count'=> (int) $t->count,
-							'parent'=> (int) $t->parent,
+							'id'          => (int) $t->term_id,
+							'name'        => (string) $t->name,
+							'slug'        => (string) $t->slug,
+							'count'       => (int) $t->count,
+							'parent'      => (int) $t->parent,
 							'description' => (string) $t->description,
+							'icon'        => $icon, // null or { attachmentId, url, termId }
 						];
 					}, $terms );
+
+					$filters[ $tax ] = $mapped;
 				}
 			}
 

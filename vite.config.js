@@ -25,6 +25,7 @@ export default defineConfig({
         theme: path.resolve(__dirname, "theme-src/js/theme.entry.js"),
         affiliation: path.resolve(__dirname, "theme-src/js/affiliation.entry.js"),
         banner: path.resolve(__dirname, "theme-src/css/banner.entry.css"),
+        admin_tax_icons: path.resolve(__dirname, "theme-src/js/admin-tax-icons.entry.js"),
       },
     },
   },

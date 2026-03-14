@@ -27,6 +27,7 @@ $text_color       = $attributes['textColor'] ?? 'var(--wp--preset--color--white)
 $post_id = get_the_ID();
 $title   = get_the_title( $post_id );
 
+
 // get first assigned expertise if auto
 if ( ! $selected_expertise ) {
 	$expertise_terms = get_the_terms( $post_id, 'expertise' );
@@ -35,13 +36,22 @@ if ( ! $selected_expertise ) {
 	}
 }
 
-$expertise_name = '';
+$expertise_term = null;
 if ( $selected_expertise ) {
-	$term = get_term( $selected_expertise );
-	if ( $term && ! is_wp_error( $term ) ) {
-		$expertise_name = esc_html( $term->name );
-	}
+	$expertise_term = get_term( (int) $selected_expertise, 'expertise' );
 }
+
+// Resolve icon (term -> parent fallback). If none, hide label entirely.
+$expertise_icon = $expertise_term ? fnesl_get_expertise_icon_for_term( $expertise_term, 'fnesl_term_icon_svg_id' ) : null;
+
+// Label text should match the term we’re displaying (original selected term name),
+// but if you prefer showing the parent name when parent icon is used, swap to $expertise_icon['term']->name.
+$expertise_name = '';
+if ( $expertise_term && ! is_wp_error( $expertise_term ) ) {
+	$expertise_name = $expertise_term->name;
+}
+
+
 
 // blur class helper
 switch ( $blur_level ) {
@@ -169,11 +179,19 @@ echo '<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-5
 
 
 
-<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
+				<?php
+$expertise_svg = '';
+if ( $expertise_term && ! is_wp_error( $expertise_term ) ) {
+	$expertise_svg = fnesl_inline_expertise_term_svg( $expertise_term, 'h-6 w-6 fill-current mr-3' );
+}
+?>
 
-	<svg class="aspect-square h-6 fill-current mr-3" aria-hidden="true"><use xlink:href="#exp-<?php echo sanitize_title( $expertise_name ); ?>"></use></svg>
-	<span class="text-md pl-4 border-l "><?php echo esc_html( $expertise_name ); ?></span>
-</div>
+<?php if ( $expertise_svg && $expertise_name ) : ?>
+	<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
+		<?php echo $expertise_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<span class="text-md pl-4 border-l"><?php echo esc_html( $expertise_name ); ?></span>
+	</div>
+<?php endif; ?>
 
 
 			<?php endif; ?>
