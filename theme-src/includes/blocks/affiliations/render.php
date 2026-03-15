@@ -37,8 +37,11 @@ $affiliations = get_posts( $query_args );
 if ( empty( $affiliations ) ) {
 	return '';
 }
+$wrapper_attrs = get_block_wrapper_attributes( [
+	'class' => 'container',
+] );
 ?>
-<div class="container">
+<div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<ul class="grid grid-cols-2 gap-6">
 		<?php foreach ( $affiliations as $affiliation ) :
 			$logo_id  = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true );
