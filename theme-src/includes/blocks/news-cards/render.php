@@ -45,7 +45,7 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 ] );
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-	<ul class="grid grid-cols-2 gap-6">
+	<ul class="grid grid-cols-3 gap-6">
 		<?php foreach ( $newsposts as $newspost ) : ?>
 		<li class="bg-white rounded-sm p-3 flex flex-col gap-6">
 

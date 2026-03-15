@@ -65,43 +65,8 @@ const NewsCard = ( { post } ) => {
           gridTemplateRows: "1fr",
         } }
       >
-        {/* Date badge */}
-        <div
-          style={ {
-            position: "relative",
-            gridColumn: 1,
-            gridRow: 1,
-            alignSelf: "start",
-            color: "#fff",
-            fontSize: "12px",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-            zIndex: 1,
-            padding: "12px",
-          } }
-        >
-          <span
-            style={ {
-              width: "8px",
-              height: "8px",
-              borderRadius: "50%",
-              background: "currentColor",
-              flexShrink: 0,
-            } }
-          />
-          { __( "News", "fnesl" ) }
-          <span
-            style={ {
-              width: "2px",
-              height: "12px",
-              background: "var(--wp--preset--color--primary-500, #1d4ed8)",
-              borderRadius: "2px",
-              margin: "0 8px",
-            } }
-          />
-          { date }
-        </div>
+
+
 
         {/* Featured image */}
         { imageSrc === undefined ? (
@@ -167,41 +132,6 @@ const NewsCard = ( { post } ) => {
           dangerouslySetInnerHTML={ { __html: title } }
         />
 
-        { post.excerpt?.rendered && (
-          <div
-            style={ { fontSize: "0.875rem" } }
-            dangerouslySetInnerHTML={ { __html: post.excerpt.rendered } }
-          />
-        ) }
-
-        <span
-          style={ {
-            marginTop: "24px",
-            fontSize: "0.875rem",
-            display: "flex",
-            gap: "12px",
-            alignItems: "center",
-            color: "var(--wp--preset--color--primary-500, #1d4ed8)",
-          } }
-        >
-          <span
-            style={ {
-              background: "var(--wp--preset--color--primary-500, #1d4ed8)",
-              color: "#fff",
-              width: "20px",
-              height: "20px",
-              borderRadius: "50%",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "11px",
-              flexShrink: 0,
-            } }
-          >
-            →
-          </span>
-          { __( "Read More", "fnesl" ) }
-        </span>
       </div>
     </li>
   );
@@ -311,7 +241,7 @@ registerBlockType( "fnesl/news-cards", {
             <ul
               style={ {
                 display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
+                gridTemplateColumns: "repeat(3, 1fr)",
                 gap: "24px",
                 margin: 0,
                 padding: 0,
