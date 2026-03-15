@@ -123,6 +123,21 @@ function tpe_inline_featured_svg( int $post_id, string $svg_class = '' ): string
 	// Remove solid stroke attributes (same logic)
 	$svg = preg_replace( '/\sstroke=("|\')(?!none|currentColor|url\()(.*?)\1/i', '', $svg );
 
+	// Strip absolute width / height attributes from the <svg> root so that CSS
+	// can control the rendered size without fighting inline HTML attributes.
+	// viewBox is preserved so the SVG still knows its own aspect ratio.
+	$svg = preg_replace_callback(
+		'/(<svg\b[^>]*)\s(?:width|height)=([\'"])[\d.%a-zA-Z]+\2/i',
+		function ( $m ) { return $m[1]; },
+		$svg
+	);
+	// Run twice to catch both width and height when they appear in either order.
+	$svg = preg_replace_callback(
+		'/(<svg\b[^>]*)\s(?:width|height)=([\'"])[\d.%a-zA-Z]+\2/i',
+		function ( $m ) { return $m[1]; },
+		$svg
+	);
+
 	// Basic hardening: strip scripts and on* handlers.
 	$svg = preg_replace( '#<script\b[^>]*>(.*?)</script>#is', '', $svg );
 	$svg = preg_replace( '/\son\w+="[^"]*"/i', '', $svg );
@@ -194,30 +209,31 @@ function tpe_svg_aspect_ratio_from_attachment( int $attachment_id ): ?float {
 }
 
 
+/**
+ * Convert an SVG aspect ratio (width ÷ height) to a container width percentage
+ * that gives each logo an approximately equal perceived visual weight.
+ *
+ * FORMULA — equal visual-area scaling
+ * ------------------------------------
+ * When a logo is rendered in a fixed-height cell its displayed area equals:
+ *   area = width × (width / ratio) = width² / ratio
+ *
+ * For all logos to have the same area, width² / ratio = constant, therefore:
+ *   width = base × √ratio
+ *
+ * The constant `BASE` is calibrated so that a perfectly square logo (ratio = 1)
+ * occupies 55 % of the cell — matching the pre-existing fallback default.
+ *
+ * This produces a smooth, continuous curve instead of the previous step
+ * function, which caused visible jumps between adjacent aspect ratios.
+ */
 function tpe_logo_width_percent_from_ratio( float $r ): float {
-	// Clamp crazy values
-	$r = max( 0.2, min( 8.0, $r ) );
+	$base  = 55.36; // % width for a 1:1 square logo — tune this one knob
 
-	// Example piecewise mapping (tune to taste):
-	// Tall logos (small r) should get a smaller width.
-	// Wide logos (large r) can take more width.
-	if ( $r < 0.6 ) {          // very tall
-		return 32;
-	}
-	if ( $r < 1.0 ) {          // tall-ish
-		return 40;
-	}
-	if ( $r < 1.6 ) {          // near-square to mild-wide
-		return 60;
-	}
-	if ( $r < 2.5 ) {          // wide
-		return 69;
-	}
-	if ( $r < 4.0 ) {          // very wide
-		return 75;
-	}
+	$r     = max( 0.2, min( 8.0, $r ) );                // clamp extreme ratios
+	$w_pct = $base * sqrt( $r );
 
-	return 79;                 // ultra-wide
+	return max( 20.0, min( 95.0, $w_pct ) );            // hard floor / ceiling
 }
 
 

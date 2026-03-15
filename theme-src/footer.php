@@ -48,7 +48,10 @@ if ( $affiliations ) : ?>
 
 
 
-	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-7">
+	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-7
+
+
+	">
 	<?php foreach ( $affiliations as $affiliation ) :
 
 		// Prefer single-colour meta, fallback to full-colour meta
@@ -81,12 +84,22 @@ if ( $affiliations ) : ?>
 				<?php endif; ?>
 				class="flex items-center justify-center col h-16 p-4 hover:text-white transition-colors duration-300 ease-in-out"
 			>
-				<div class="flex items-center justify-center" style="width: <?php echo esc_attr( $w_pct ); ?>%;">
+				<?php
+				/*
+				 * Wrapper is (w_pct wide × 2rem tall).
+				 * SVG uses w-auto h-auto max-w-full max-h-full — the CSS
+				 * equivalent of object-fit:contain — so it scales
+				 * proportionally within that box without overflowing the cell.
+				 */
+				?>
+				<div
+					class="flex items-center justify-center"
+					style="width: <?php echo esc_attr( $w_pct ); ?>%; height: 2rem;"
+				>
 					<?php
 					echo tpe_inline_featured_svg(
 						$affiliation->ID,
-						'w-full fill-current',
-						$logo_id
+						'w-auto h-auto max-w-full max-h-full fill-current'
 					); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 				</div>
