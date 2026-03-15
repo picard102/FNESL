@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "fnesl/news-cards",
+  "title": "News Cards",
+  "category": "fnesl",
+  "icon": "media-document",
+  "description": "Displays news post cards with featured image, date, and content.",
+  "supports": {
+    "html": false,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "mode": {
+      "type": "string",
+      "default": "latest"
+    },
+    "count": {
+      "type": "integer",
+      "default": 2
+    },
+    "pickedIds": {
+      "type": "array",
+      "items": { "type": "integer" },
+      "default": []
+    }
+  },
+  "editorScript": "file:./index.js",
+  "render": "file:./render.php"
+}

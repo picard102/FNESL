@@ -16,6 +16,7 @@ add_action('init', function () {
 
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/home-hero' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/affiliations' );
+	register_block_type( get_stylesheet_directory() . '/includes/blocks/news-cards' );
 });
 
 
