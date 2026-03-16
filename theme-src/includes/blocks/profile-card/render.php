@@ -24,6 +24,12 @@ $role_label = $roles && !is_wp_error($roles)
     ? esc_html($roles[0]->name)
     : '';
 
+
+$credentials = get_the_terms($profile_id, 'credentials');
+$credentials_label = $credentials && !is_wp_error($credentials)
+    ? esc_html(implode(', ', wp_list_pluck($credentials, 'name')))
+    : '';
+
 $modal_id = 'profile-modal-' . $profile_id;
 ?>
 
@@ -31,27 +37,43 @@ $modal_id = 'profile-modal-' . $profile_id;
 <button
     type="button"
     data-profile-modal="<?php echo esc_attr($modal_id); ?>"
-    class="profile-card w-full max-w-xs bg-gray-50 p-4 rounded-2xl text-left text-gray-900 cursor-pointer"
+    class="profile-card w-full   text-left text-gray-900 cursor-pointer
+		flex flex-col gap-3"
 >
 
-    <div class="w-full aspect-[4/5] rounded-xl overflow-hidden mb-4">
+    <div class="w-full aspect-[4/3] rounded-sm overflow-hidden border border-primary-100  outline-1 -outline-offset-1 outline-black/5 bg-primary-100 ">
         <?php
         echo str_replace(
             '<img',
-            '<img class="w-full h-full object-cover"',
+            '<img class="w-full h-full object-cover object-top"',
             $image
         );
         ?>
     </div>
 
-    <h3 class="text-lg font-semibold">
-        <?php echo $title; ?>
-    </h3>
+		<div class="flex flex-col  ">
+			<h3 class="text-base font-medium text-pretty text-primary-900 line-clamp-2 leading-tight mb-1">
+					<?php echo $title; ?>
+			</h3>
 
-    <p class="text-sm text-gray-500 mt-1">
-        <?php echo $role_label; ?>
-    </p>
+
+            <?php if ($credentials_label) : ?>
+            <p class="text-sm text-primary-600">
+                <?php echo $credentials_label; ?>
+            </p>
+            <?php endif; ?>
+
+            <?php if ($role_label) : ?>
+            <p class="text-sm text-primary-800">
+                <?php echo $role_label; ?>
+            </p>
+            <?php endif; ?>
+
+		</div>
 </button>
+
+
+
 
 
 <!-- Modal -->
