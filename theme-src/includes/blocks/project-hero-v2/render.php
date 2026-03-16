@@ -21,7 +21,7 @@ $font_size_class = preg_replace('/^(\d+)/', '$1-', $font_size); // adds dash aft
 
 $text_align       = $attributes['textAlign'] ?? 'left';
 $selected_expertise = $attributes['selectedExpertise'] ?? null;
-$background_color = $attributes['backgroundColor'] ?? 'var(--wp--preset--color--primary)';
+$background_color = $attributes['backgroundColor'] ?? 'var(--wp--preset--color--primary-700)';
 $text_color       = $attributes['textColor'] ?? 'var(--wp--preset--color--white)';
 
 $post_id = get_the_ID();
@@ -99,7 +99,7 @@ switch ( $blur_level ) {
 
 <div class="max-w-[1800px] mx-auto p-2">
 
-	<div class="  bg-primary-500  text-white rounded-md h-[85dvh] max-h-[600px]  justify-between flex flex-col isolate mx-auto
+	<div class="  bg-primary-700  text-white rounded-md h-[85dvh] max-h-[600px]  justify-between flex flex-col isolate mx-auto
 
 	 relative overflow-hidden    " style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;">
 

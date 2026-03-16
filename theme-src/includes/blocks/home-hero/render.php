@@ -21,7 +21,7 @@ $background_image_thumb = $background_image_id
 $background_video  = $attributes['backgroundVideo']['url'] ?? '';
 $blur_level        = $attributes['blurLevel'] ?? 'xs';
 $show_overlay      = ! empty( $attributes['showOverlay'] );
-$background_color  = $attributes['backgroundColor'] ?? 'var(--wp--preset--color--primary-500)';
+$background_color  = $attributes['backgroundColor'] ?? 'var(--wp--preset--color--primary-700)';
 $text_color        = $attributes['textColor'] ?? 'var(--wp--preset--color--white)';
 
 $featured_mode     = $attributes['featuredProjectMode'] ?? 'none';
@@ -104,7 +104,7 @@ $has_inner = (bool) strlen( trim( (string) $content ) );
 
 <div class="max-w-[1800px]  mx-auto p-2 ">
 
-<div class="relative bg-primary-500  text-white rounded-md h-[85dvh] max-h-[800px]  justify-between flex flex-col isolate mx-auto "
+<div class="relative bg-primary-700  text-white rounded-md h-[85dvh] max-h-[800px]  justify-between flex flex-col isolate mx-auto "
 		style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;" >
 
 		<?php get_template_part( 'parts/menu', null, null ); ?>
