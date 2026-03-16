@@ -1,116 +1,165 @@
-(() => {
-  const SELECTOR = {
-    root: "[data-carousel]",
-    track: "[data-carousel-track]",
-    prev: "[data-carousel-prev]",
-    next: "[data-carousel-next]",
-  };
+import {
+  createRoot,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from "@wordpress/element";
+import apiFetch from "@wordpress/api-fetch";
+import { ProjectCard } from "../_shared/ui/ProjectCard";
 
-  const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+const WIDE = "var(--wp--style--global--content-size, 72rem)";
+const GUTTER = "var(--wp--style--root--padding-left, 1rem)";
+const PADDING = `max(${GUTTER}, calc((100vw - min(100vw, ${WIDE})) / 2 + ${GUTTER}))`;
 
-  function getScrollState(track) {
-    // Use a small epsilon because scrollLeft rarely lands on exact integers with smooth scrolling
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function App({ config }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const trackRef = useRef(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  useEffect(() => {
+    apiFetch({
+      path: "/fnesl/v1/project-archive",
+      method: "POST",
+      data: { perPage: config.perPage || 12, includeFilters: false },
+    })
+      .then((data) =>
+        setProjects(Array.isArray(data?.projects) ? data.projects : [])
+      )
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const updateState = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
     const eps = 2;
     const max = track.scrollWidth - track.clientWidth;
-    const left = track.scrollLeft;
+    setAtStart(track.scrollLeft <= eps);
+    setAtEnd(track.scrollLeft >= max - eps);
+  }, []);
 
-    return {
-      max: Math.max(0, max),
-      atStart: left <= eps,
-      atEnd: left >= max - eps,
-    };
-  }
-
-  function getStep(track) {
-    // Find the first <li> and use its width + gap as the scroll step
-    const first = track.querySelector(":scope > li");
-    if (!first) return track.clientWidth;
-
-    const firstRect = first.getBoundingClientRect();
-    const styles = getComputedStyle(track);
-    const gap = parseFloat(styles.columnGap || styles.gap || "0") || 0;
-
-    // If cards are variable width, this still feels right in practice
-    return firstRect.width + gap;
-  }
-
-  function updateButtons(track, prevBtn, nextBtn) {
-    const { atStart, atEnd } = getScrollState(track);
-    if (prevBtn) prevBtn.disabled = atStart;
-    if (nextBtn) nextBtn.disabled = atEnd;
-  }
-
-  function scrollByStep(track, dir) {
-    const step = getStep(track);
-    const target = clamp(
-      track.scrollLeft + dir * step,
-      0,
-      track.scrollWidth - track.clientWidth
-    );
-
-    track.scrollTo({ left: target, behavior: "smooth" });
-  }
-
-  function initCarousel(root) {
-    const track = root.querySelector(SELECTOR.track);
+  const scrollByStep = useCallback((dir) => {
+    const track = trackRef.current;
     if (!track) return;
-
-    const prevBtn = root.querySelector(SELECTOR.prev);
-    const nextBtn = root.querySelector(SELECTOR.next);
-
-    // Initial state
-    updateButtons(track, prevBtn, nextBtn);
-
-    // Buttons
-    prevBtn?.addEventListener("click", () => scrollByStep(track, -1));
-    nextBtn?.addEventListener("click", () => scrollByStep(track, 1));
-
-    // Keep buttons updated while scrolling
-    let raf = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => updateButtons(track, prevBtn, nextBtn));
-    };
-    track.addEventListener("scroll", onScroll, { passive: true });
-
-    // Keyboard support (only when focused)
-    track.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        scrollByStep(track, -1);
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        scrollByStep(track, 1);
-      } else if (e.key === "Home") {
-        e.preventDefault();
-        track.scrollTo({ left: 0, behavior: "smooth" });
-      } else if (e.key === "End") {
-        e.preventDefault();
-        track.scrollTo({ left: track.scrollWidth, behavior: "smooth" });
-      }
+    const first = track.querySelector(":scope > li");
+    const gap = first
+      ? parseFloat(getComputedStyle(track).columnGap || "0") || 0
+      : 0;
+    const step = first ? first.getBoundingClientRect().width + gap : track.clientWidth;
+    track.scrollTo({
+      left: clamp(
+        track.scrollLeft + dir * step,
+        0,
+        track.scrollWidth - track.clientWidth
+      ),
+      behavior: "smooth",
     });
+  }, []);
 
-    // Resize: step/gap can change with breakpoints, so re-evaluate state
-    const ro = new ResizeObserver(() => updateButtons(track, prevBtn, nextBtn));
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !projects.length) return;
+    updateState();
+    track.addEventListener("scroll", updateState, { passive: true });
+    const ro = new ResizeObserver(updateState);
     ro.observe(track);
+    window.addEventListener("load", updateState, { once: true });
+    return () => {
+      track.removeEventListener("scroll", updateState);
+      ro.disconnect();
+    };
+  }, [projects, updateState]);
 
-    // If images load and affect layout, update button state again
-    window.addEventListener(
-      "load",
-      () => updateButtons(track, prevBtn, nextBtn),
-      {
-        once: true,
-      }
-    );
-  }
+  if (loading || !projects.length) return null;
 
-  function initAll() {
-    document.querySelectorAll(SELECTOR.root).forEach(initCarousel);
-  }
+  return (
+    <div className="w-full">
+      <div
+        className="mx-auto mb-3 flex items-center justify-end gap-2"
+        style={{ maxWidth: WIDE, paddingInline: GUTTER }}
+      >
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-current text-current focus:outline-none focus:ring-2 ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={() => scrollByStep(-1)}
+          disabled={atStart}
+          aria-label="Previous projects"
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+        <button
+          type="button"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border-2 border-current text-current focus:outline-none ring-offset-1 focus:ring-2 disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={() => scrollByStep(1)}
+          disabled={atEnd}
+          aria-label="Next projects"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAll, { once: true });
-  } else {
-    initAll();
-  }
-})();
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen overflow-visible">
+        <ul
+          ref={trackRef}
+          className="flex gap-6 py-3 overflow-x-auto snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden outline-none"
+          style={{
+            paddingLeft: PADDING,
+            paddingRight: PADDING,
+            scrollPaddingLeft: PADDING,
+            scrollPaddingRight: PADDING,
+          }}
+          tabIndex={0}
+          role="region"
+          aria-label="Projects"
+          onKeyDown={(e) => {
+            if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              scrollByStep(-1);
+            } else if (e.key === "ArrowRight") {
+              e.preventDefault();
+              scrollByStep(1);
+            } else if (e.key === "Home") {
+              e.preventDefault();
+              trackRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+            } else if (e.key === "End") {
+              e.preventDefault();
+              trackRef.current?.scrollTo({
+                left: trackRef.current.scrollWidth,
+                behavior: "smooth",
+              });
+            }
+          }}
+        >
+          {projects.map((p) => (
+            <li
+              key={p.id}
+              className="snap-start shrink-0 w-[280px] sm:w-[320px] lg:w-[350px]"
+            >
+              <ProjectCard project={p} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function mountAll() {
+  document.querySelectorAll("[data-project-cards]").forEach((el) => {
+    const config = JSON.parse(el.getAttribute("data-config") || "{}");
+    createRoot(el).render(<App config={config} />);
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", mountAll, { once: true });
+} else {
+  mountAll();
+}
