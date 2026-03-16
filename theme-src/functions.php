@@ -124,3 +124,89 @@ add_action('enqueue_block_editor_assets', function () {
   // Ensure apiFetch exists for any block that imports @wordpress/api-fetch
   wp_enqueue_script('wp-api-fetch');
 }, 0);
+
+
+/**
+ * REST endpoint: /wp-json/fnesl/v1/profile/{id}
+ * Returns formatted profile data for the shared modal.
+ */
+add_action('rest_api_init', function () {
+    register_rest_route('fnesl/v1', '/profile/(?P<id>\d+)', [
+        'methods'             => 'GET',
+        'callback'            => function (WP_REST_Request $request) {
+            $id   = (int) $request['id'];
+            $post = get_post($id);
+
+            if (!$post || $post->post_type !== 'profile') {
+                return new WP_Error('not_found', 'Profile not found', ['status' => 404]);
+            }
+
+            $roles       = get_the_terms($id, 'Roles');
+            $credentials = get_the_terms($id, 'credentials');
+
+            return [
+                'title'       => get_the_title($id),
+                'role'        => ($roles && !is_wp_error($roles)) ? $roles[0]->name : '',
+                'credentials' => ($credentials && !is_wp_error($credentials))
+                    ? implode(', ', wp_list_pluck($credentials, 'name'))
+                    : '',
+                'image'       => get_the_post_thumbnail($id, 'large'),
+                'content'     => wpautop($post->post_content),
+            ];
+        },
+        'permission_callback' => '__return_true',
+        'args'                => [
+            'id' => ['validate_callback' => fn($v) => is_numeric($v)],
+        ],
+    ]);
+});
+
+
+/**
+ * Inject single shared profile modal into the footer.
+ */
+add_action('wp_footer', function () {
+    ?>
+
+    <dialog id="profile-modal-shared" class="profile-modal rounded-xl p-0 max-w-xl w-[90vw] m-auto">
+        <form method="dialog" class="fixed inset-0 bg-black/50"></form>
+
+
+        <div class="bg-white p-6 rounded-lg relative z-10 flex flex-col gap-4">
+            <div id="profile-modal-image" class="w-full aspect-[4/3] rounded-sm overflow-hidden border border-primary-100  outline-1 -outline-offset-1 outline-black/5 bg-primary-100"></div>
+
+						<div>
+
+						<div class="flex flex-wrap px-1 items-baseline gap-2 ">
+            <h2 id="profile-modal-title" class="text-3xl font-medium text-pretty text-primary-900 line-clamp-2 leading-tight mb-1"></h2>
+
+            <p id="profile-modal-credentials" class="text-primary-500 "></p>
+
+</div>
+
+            <p id="profile-modal-role" class="text-gray-500 "></p>
+
+            <div id="profile-modal-content" class="prose mt-6 mb-6"></div>
+						</div>
+
+            <form method="dialog">
+                <button class="absolute top-2 right-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg">Close</button>
+            </form>
+        </div>
+
+
+    </dialog>
+
+
+    <?php
+});
+
+
+/**
+ * Pass REST base URL to frontend JS.
+ */
+add_action('wp_enqueue_scripts', function () {
+    wp_localize_script('fnesl-theme-script', 'fneslData', [
+        'restUrl' => esc_url_raw(rest_url('fnesl/v1/profile/')),
+    ]);
+}, 20);

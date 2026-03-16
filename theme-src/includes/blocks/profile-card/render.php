@@ -30,7 +30,6 @@ $credentials_label = $credentials && !is_wp_error($credentials)
     ? esc_html(implode(', ', wp_list_pluck($credentials, 'name')))
     : '';
 
-$modal_id = 'profile-modal-' . $profile_id;
 $has_content = !empty(trim($post->post_content));
 ?>
 
@@ -38,9 +37,9 @@ $has_content = !empty(trim($post->post_content));
 <?php if ($has_content) : ?>
 <button
     type="button"
-    data-profile-modal="<?php echo esc_attr($modal_id); ?>"
+    data-profile-id="<?php echo esc_attr($profile_id); ?>"
     class="profile-card w-full   text-left text-gray-900 cursor-pointer
-		flex flex-col gap-3"
+		flex flex-col gap-3  focus:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-3 transition rounded-sm"
 >
 <?php else : ?>
 <div class="profile-card w-full   text-left text-gray-900
@@ -57,7 +56,7 @@ $has_content = !empty(trim($post->post_content));
         ?>
     </div>
 
-		<div class="flex flex-col  ">
+		<div class="flex flex-col px-1 ">
 			<h3 class="text-base font-medium text-pretty text-primary-900 line-clamp-2 leading-tight mb-1">
 					<?php echo $title; ?>
 			</h3>
@@ -83,36 +82,3 @@ $has_content = !empty(trim($post->post_content));
 </div>
 <?php endif; ?>
 
-
-
-<?php if ($has_content) : ?>
-<!-- Modal -->
-<dialog id="<?php echo esc_attr($modal_id); ?>" class="profile-modal rounded-xl p-0 max-w-xl w-[90vw]">
-
-    <form method="dialog" class="fixed inset-0 bg-black/50"></form>
-
-    <div class="bg-white p-6 rounded-xl relative z-10">
-
-        <div class="w-full aspect-[4/5] rounded-xl overflow-hidden mb-4">
-            <?php
-            echo str_replace(
-                '<img',
-                '<img class="w-full h-full object-cover"',
-                $image
-            );
-            ?>
-        </div>
-
-        <h2 class="text-2xl font-semibold mb-2"><?php echo $title; ?></h2>
-        <p class="text-gray-500 mb-4"><?php echo $role_label; ?></p>
-
-        <div class="prose max-w-none mb-6">
-            <?php echo wpautop($post->post_content); ?>
-        </div>
-
-        <button class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg" value="close">
-            Close
-        </button>
-    </div>
-</dialog>
-<?php endif; ?>
