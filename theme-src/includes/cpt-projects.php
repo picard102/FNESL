@@ -133,6 +133,71 @@ add_action('init', function () {
 });
 
 // -----------------------------
+// Location term meta – lat/lng for map dot placement
+// -----------------------------
+add_action( 'init', function () {
+	foreach ( [ 'location_lat', 'location_lng' ] as $key ) {
+		register_term_meta( 'location', $key, [
+			'type'              => 'string',
+			'single'            => true,
+			'sanitize_callback' => function ( $v ) {
+				$f = filter_var( $v, FILTER_VALIDATE_FLOAT );
+				return ( $f !== false ) ? (string) $f : '';
+			},
+			'show_in_rest'      => true,
+		] );
+	}
+} );
+
+// Admin form – Add term screen
+add_action( 'location_add_form_fields', function () { ?>
+	<div class="form-field">
+		<label for="location-lat"><?php esc_html_e( 'Latitude', 'fnesl' ); ?></label>
+		<input type="text" id="location-lat" name="location_lat" placeholder="e.g. 49.895" />
+		<p><?php esc_html_e( 'Optional. Used to position a dot on the location map.', 'fnesl' ); ?></p>
+	</div>
+	<div class="form-field">
+		<label for="location-lng"><?php esc_html_e( 'Longitude', 'fnesl' ); ?></label>
+		<input type="text" id="location-lng" name="location_lng" placeholder="e.g. -97.138" />
+	</div>
+<?php } );
+
+// Admin form – Edit term screen
+add_action( 'location_edit_form_fields', function ( WP_Term $term ) {
+	$lat = get_term_meta( $term->term_id, 'location_lat', true );
+	$lng = get_term_meta( $term->term_id, 'location_lng', true ); ?>
+	<tr class="form-field">
+		<th scope="row"><label for="location-lat"><?php esc_html_e( 'Latitude', 'fnesl' ); ?></label></th>
+		<td>
+			<input type="text" id="location-lat" name="location_lat" value="<?php echo esc_attr( $lat ); ?>" placeholder="e.g. 49.895" />
+			<p class="description"><?php esc_html_e( 'Optional. Used to position a dot on the location map.', 'fnesl' ); ?></p>
+		</td>
+	</tr>
+	<tr class="form-field">
+		<th scope="row"><label for="location-lng"><?php esc_html_e( 'Longitude', 'fnesl' ); ?></label></th>
+		<td>
+			<input type="text" id="location-lng" name="location_lng" value="<?php echo esc_attr( $lng ); ?>" />
+		</td>
+	</tr>
+<?php } );
+
+// Save both on add and edit
+function _fnesl_save_location_meta( int $term_id ): void {
+	foreach ( [ 'location_lat', 'location_lng' ] as $key ) {
+		if ( isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$val = filter_var( wp_unslash( $_POST[ $key ] ), FILTER_VALIDATE_FLOAT ); // phpcs:ignore
+			if ( $val !== false ) {
+				update_term_meta( $term_id, $key, (string) $val );
+			} else {
+				delete_term_meta( $term_id, $key );
+			}
+		}
+	}
+}
+add_action( 'created_location', '_fnesl_save_location_meta' );
+add_action( 'edited_location',  '_fnesl_save_location_meta' );
+
+// -----------------------------
 // Partners taxonomy
 // -----------------------------
 add_action('init', function () {
