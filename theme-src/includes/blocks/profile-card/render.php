@@ -31,15 +31,21 @@ $credentials_label = $credentials && !is_wp_error($credentials)
     : '';
 
 $modal_id = 'profile-modal-' . $profile_id;
+$has_content = !empty(trim($post->post_content));
 ?>
 
-<!-- Card (unchanged layout) -->
+<!-- Card -->
+<?php if ($has_content) : ?>
 <button
     type="button"
     data-profile-modal="<?php echo esc_attr($modal_id); ?>"
     class="profile-card w-full   text-left text-gray-900 cursor-pointer
 		flex flex-col gap-3"
 >
+<?php else : ?>
+<div class="profile-card w-full   text-left text-gray-900
+		flex flex-col gap-3">
+<?php endif; ?>
 
     <div class="w-full aspect-[4/3] rounded-sm overflow-hidden border border-primary-100  outline-1 -outline-offset-1 outline-black/5 bg-primary-100 ">
         <?php
@@ -70,12 +76,16 @@ $modal_id = 'profile-modal-' . $profile_id;
             <?php endif; ?>
 
 		</div>
+
+<?php if ($has_content) : ?>
 </button>
+<?php else : ?>
+</div>
+<?php endif; ?>
 
 
 
-
-
+<?php if ($has_content) : ?>
 <!-- Modal -->
 <dialog id="<?php echo esc_attr($modal_id); ?>" class="profile-modal rounded-xl p-0 max-w-xl w-[90vw]">
 
@@ -105,3 +115,4 @@ $modal_id = 'profile-modal-' . $profile_id;
         </button>
     </div>
 </dialog>
+<?php endif; ?>
