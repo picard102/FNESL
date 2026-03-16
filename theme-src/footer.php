@@ -48,10 +48,7 @@ if ( $affiliations ) : ?>
 
 
 
-	<ul class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-7
-
-
-	">
+	<ul class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
 	<?php foreach ( $affiliations as $affiliation ) :
 
 		// Prefer single-colour meta, fallback to full-colour meta
@@ -66,11 +63,35 @@ if ( $affiliations ) : ?>
 			continue;
 		}
 
-		$ratio = tpe_svg_aspect_ratio_from_attachment( $logo_id );
-		$w_pct = $ratio ? tpe_logo_width_percent_from_ratio( $ratio ) : 55.359769747362;
+		$ratio   = tpe_svg_aspect_ratio_from_attachment( $logo_id );
+		$r_raw   = $ratio ? max( 0.2, min( 8.0, (float) $ratio ) ) : 1.0;
+		// Perceptual compression: r^0.6 squashes extreme wide/portrait logos toward
+		// the centre (r=1) so their visual weight stays comparable to square logos.
+		// Square logos (r≈1) are barely affected; a 5.8:1 logo is treated as ~3.4:1.
+		$r       = pow( $r_raw, 0.6 );
 
-		// keep layout sane if something unexpected comes back
-		$w_pct = max( 10, min( 100, (float) $w_pct ) );
+		/*
+		 * Equal-visual-area sizing on the compressed ratio.
+		 *
+		 * w = √(area × r),  h = √(area / r)  →  w × h = area (constant)
+		 *
+		 * area_px2 — target pixel area; raise/lower to scale all logos uniformly.
+		 * h_cap_px — ceiling for portrait logos; set above √area_px2 so that
+		 *            landscape/square logos never hit the cap.
+		 */
+		$area_px2  = 2500;  // ← one knob: bigger = all logos larger
+		$h_cap_px  = 56;    // ← above √2000 ≈ 44.7 so square logos are never capped
+
+		$logo_w_px = (int) round( sqrt( $area_px2 * $r ) );
+		$logo_h_px = (int) round( sqrt( $area_px2 / $r ) );
+
+		if ( $logo_h_px > $h_cap_px ) {
+			$logo_h_px = $h_cap_px;
+			$logo_w_px = (int) round( $logo_h_px * $r );
+		}
+
+		$logo_w_px = max( 12, min( 160, $logo_w_px ) );
+		$logo_h_px = max(  8, min( $h_cap_px, $logo_h_px ) );
 
 		$url = (string) get_post_meta( $affiliation->ID, 'affiliation_url', true );
 		?>
@@ -82,24 +103,16 @@ if ( $affiliations ) : ?>
 				<?php else : ?>
 					aria-disabled="true" tabindex="-1"
 				<?php endif; ?>
-				class="flex items-center justify-center col h-16 p-4 hover:text-white transition-colors duration-300 ease-in-out"
+				class="flex items-center justify-center h-16 p-4 hover:text-white transition-colors duration-300 ease-in-out"
 			>
-				<?php
-				/*
-				 * Wrapper is (w_pct wide × 2rem tall).
-				 * SVG uses w-auto h-auto max-w-full max-h-full — the CSS
-				 * equivalent of object-fit:contain — so it scales
-				 * proportionally within that box without overflowing the cell.
-				 */
-				?>
 				<div
 					class="flex items-center justify-center"
-					style="width: <?php echo esc_attr( $w_pct ); ?>%; height: 2rem;"
+					style="width: <?php echo esc_attr( $logo_w_px ); ?>px; height: <?php echo esc_attr( $logo_h_px ); ?>px;"
 				>
 					<?php
 					echo tpe_inline_featured_svg(
 						$affiliation->ID,
-						'w-auto h-auto max-w-full max-h-full fill-current'
+						'block w-full h-full fill-current'
 					); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 				</div>
