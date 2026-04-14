@@ -32,6 +32,11 @@ bs.init({
     path.join(srcDir, "**/*.css"),
     path.join(srcDir, "**/*.{jpg,jpeg,png,gif,webp,svg,html}"),
   ],
+  watchOptions: {
+    ignoreInitial: true,
+    usePolling: true,
+    interval: 300,
+  },
 
   reloadDelay: 500,
   reloadDebounce: 500,

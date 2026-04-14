@@ -58,7 +58,13 @@ function run() {
 
   if (process.argv.includes("--watch")) {
     console.log("👀 Watching SVG icons in", svgInputDir);
-    chokidar.watch(svgInputDir, { ignoreInitial: true }).on("all", () => {
+    chokidar
+      .watch(svgInputDir, {
+        ignoreInitial: true,
+        usePolling: true,
+        interval: 300,
+      })
+      .on("all", () => {
       console.log("♻️ Rebuilding sprite…");
       buildSprite();
     });

@@ -14,8 +14,8 @@
     "sprite": "node ./sprite.js",
     "sprite:watch": "node ./sprite.js --watch",
     "serve": "node ./bs.js",
-    "build": "npm-run-all clean vite:build build:blocks copy sprite",
-    "start": "npm-run-all clean vite:build build:blocks copy sprite --parallel vite:watch dev:blocks copy:watch sprite:watch serve"
+    "build": "npm-run-all clean copy vite:build build:blocks sprite",
+    "start": "npm-run-all clean copy vite:build build:blocks sprite --parallel vite:watch dev:blocks copy:watch sprite:watch serve"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",

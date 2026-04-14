@@ -101,6 +101,12 @@ export default () => {
 
     return {
       input: path.resolve(srcRoot, f),
+      watch: {
+        chokidar: {
+          usePolling: true,
+          interval: 300,
+        },
+      },
       output: {
         dir: path.resolve(outRoot, blockDir),
         entryFileNames: `[name].js`,

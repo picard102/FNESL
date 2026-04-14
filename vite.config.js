@@ -16,6 +16,12 @@ export default defineConfig({
     }),
   ],
   base: "",
+  server: {
+    watch: {
+      usePolling: true,
+      interval: 300,
+    },
+  },
   build: {
     outDir: path.resolve(__dirname, "theme-dist"),
     emptyOutDir: false, // 🚀 prevents clearing dist

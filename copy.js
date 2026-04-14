@@ -22,6 +22,11 @@ const excludeDirs = [
   "deps_temp_folders",
 ];
 const excludePatterns = [/\.timestamp-/];
+const watchOptions = {
+  ignoreInitial: true,
+  usePolling: true,
+  interval: 300,
+};
 
 function shouldCopy(src) {
   const rel = path.relative(srcDir, src);
@@ -63,22 +68,20 @@ async function run() {
 
   if (process.argv.includes("--watch")) {
     console.log("👀 Watching static files in", srcDir);
-    chokidar
-      .watch(srcDir, { ignoreInitial: true })
-      .on("all", async (event, filePath) => {
-        const rel = path.relative(srcDir, filePath);
-        try {
-          if (event === "unlink" || event === "unlinkDir") {
-            const destPath = path.join(distDir, rel);
-            await fs.remove(destPath);
-            console.log(`🗑️ Removed: ${rel}`);
-          } else {
-            await copyOne(filePath);
-          }
-        } catch (err) {
-          console.error(`❌ Error handling ${rel}:`, err);
+    chokidar.watch(srcDir, watchOptions).on("all", async (event, filePath) => {
+      const rel = path.relative(srcDir, filePath);
+      try {
+        if (event === "unlink" || event === "unlinkDir") {
+          const destPath = path.join(distDir, rel);
+          await fs.remove(destPath);
+          console.log(`🗑️ Removed: ${rel}`);
+        } else {
+          await copyOne(filePath);
         }
-      });
+      } catch (err) {
+        console.error(`❌ Error handling ${rel}:`, err);
+      }
+    });
   }
 }
 
