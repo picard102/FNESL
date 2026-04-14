@@ -14,9 +14,13 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function AffiliationCard({ item }) {
+function AffiliationCard({ item, contentStyle }) {
   return (
-    <article className="bg-white rounded-sm p-6 grid grid-cols-[1fr_2fr] gap-6 h-full">
+    <article
+      className={`bg-white rounded-sm p-6 grid h-full ${
+        contentStyle === "logo" ? "grid-cols-1" : "grid-cols-[1fr_2fr] gap-6"
+      }`}
+    >
       <div className="flex items-center justify-center">
         {item.url ? (
           <a
@@ -31,34 +35,36 @@ function AffiliationCard({ item }) {
         )}
       </div>
 
-      <div className="flex flex-col justify-center items-start self-start">
-        <h3 className="text-xl mb-2">{item.title || ""}</h3>
-        <div
-          className="text-sm text-primary-900"
-          dangerouslySetInnerHTML={{ __html: item.description_html || "" }}
-        />
+      {contentStyle !== "logo" && (
+        <div className="flex flex-col justify-center items-start self-start">
+          <h3 className="text-xl mb-2">{item.title || ""}</h3>
+          <div
+            className="text-sm text-primary-900"
+            dangerouslySetInnerHTML={{ __html: item.description_html || "" }}
+          />
 
-        {item.url && (
-          <a
-            href={item.url}
-            className="mt-6 text-sm text-primary-500 flex gap-3"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span className="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center">
-              <svg className="aspect-square h-3 fill-current" aria-hidden="true">
-                <use xlinkHref="#icons_arrow_east"></use>
-              </svg>
-            </span>
-            Visit Website
-          </a>
-        )}
-      </div>
+          {item.url && (
+            <a
+              href={item.url}
+              className="mt-6 text-sm text-primary-500 flex gap-3"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center">
+                <svg className="aspect-square h-3 fill-current" aria-hidden="true">
+                  <use xlinkHref="#icons_arrow_east"></use>
+                </svg>
+              </span>
+              Visit Website
+            </a>
+          )}
+        </div>
+      )}
     </article>
   );
 }
 
-function App({ items }) {
+function App({ items, contentStyle }) {
   const trackRef = useRef(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
@@ -171,9 +177,13 @@ function App({ items }) {
           {items.map((item) => (
             <li
               key={item.id}
-              className="snap-start shrink-0 w-[min(90vw,720px)] lg:w-[720px] list-none"
+              className={`snap-start shrink-0 list-none ${
+                contentStyle === "logo"
+                  ? "w-[min(70vw,320px)] lg:w-[320px]"
+                  : "w-[min(90vw,720px)] lg:w-[720px]"
+              }`}
             >
-              <AffiliationCard item={item} />
+              <AffiliationCard item={item} contentStyle={contentStyle} />
             </li>
           ))}
         </ul>
@@ -185,7 +195,12 @@ function App({ items }) {
 function mountAll() {
   document.querySelectorAll("[data-affiliations-carousel]").forEach((el) => {
     const config = JSON.parse(el.getAttribute("data-config") || "{}");
-    createRoot(el).render(<App items={config.items || []} />);
+    createRoot(el).render(
+      <App
+        items={config.items || []}
+        contentStyle={config.contentStyle || "full"}
+      />
+    );
   });
 }
 

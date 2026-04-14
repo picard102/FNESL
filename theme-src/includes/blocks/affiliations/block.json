@@ -19,6 +19,14 @@
       "type": "string",
       "default": "grid"
     },
+    "contentStyle": {
+      "type": "string",
+      "default": "full"
+    },
+    "groupTermId": {
+      "type": "integer",
+      "default": 0
+    },
     "count": {
       "type": "integer",
       "default": 2

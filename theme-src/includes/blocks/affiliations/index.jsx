@@ -15,7 +15,7 @@ import { useMemo } from "@wordpress/element";
 // Mirrors the front-end li layout. Each card independently resolves its logo
 // via getMedia so loading states are per-card rather than blocking the whole grid.
 
-const AffiliationCard = ( { affiliation } ) => {
+const AffiliationCard = ( { affiliation, contentStyle } ) => {
   const logoId = affiliation.meta?.affiliation_svg_logo_id || 0;
   const url    = affiliation.meta?.affiliation_url || "";
   const title  = affiliation.title?.rendered || `#${ affiliation.id }`;
@@ -37,8 +37,9 @@ const AffiliationCard = ( { affiliation } ) => {
         borderRadius: "2px",
         padding: "24px",
         display: "grid",
-        gridTemplateColumns: "1fr 2fr",
-        gap: "24px",
+        gridTemplateColumns:
+          contentStyle === "logo" ? "1fr" : "1fr 2fr",
+        gap: contentStyle === "logo" ? "0" : "24px",
         listStyle: "none",
       } }
     >
@@ -83,20 +84,21 @@ const AffiliationCard = ( { affiliation } ) => {
       </div>
 
       {/* ── Text column ── */}
-      <div
-        style={ {
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-        } }
-      >
-        <h3
-          style={ { fontSize: "1.25rem", marginTop: 0, marginBottom: "8px" } }
-          dangerouslySetInnerHTML={ { __html: title } }
-        />
-
-      </div>
+      { contentStyle !== "logo" && (
+        <div
+          style={ {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "flex-start",
+          } }
+        >
+          <h3
+            style={ { fontSize: "1.25rem", marginTop: 0, marginBottom: "8px" } }
+            dangerouslySetInnerHTML={ { __html: title } }
+          />
+        </div>
+      ) }
     </li>
   );
 };
@@ -105,7 +107,7 @@ const AffiliationCard = ( { affiliation } ) => {
 
 registerBlockType( "fnesl/affiliations", {
   edit: ( { attributes, setAttributes } ) => {
-    const { mode, displayType, count, pickedIds } = attributes;
+    const { mode, displayType, contentStyle, groupTermId, count, pickedIds } = attributes;
 
     const affiliations = useSelect(
       ( select ) =>
@@ -119,13 +121,38 @@ registerBlockType( "fnesl/affiliations", {
       [],
     );
 
+    const groups = useSelect(
+      ( select ) =>
+        select( "core" ).getEntityRecords( "taxonomy", "placement", {
+          per_page: 100,
+          hide_empty: false,
+          orderby: "name",
+          order: "asc",
+        } ),
+      [],
+    );
+
     const blockProps = useBlockProps();
+
+    const taxonomyAffiliations = useMemo( () => {
+      if ( ! affiliations ) return [];
+      if ( ! groupTermId ) return [];
+      return affiliations.filter( ( a ) =>
+        Array.isArray( a.placement ) &&
+        a.placement.includes( groupTermId )
+      );
+    }, [ affiliations, groupTermId ] );
 
     const previewItems = useMemo( () => {
       if ( ! affiliations ) return [];
       if ( mode === "pick" ) {
         return affiliations.filter( ( a ) => pickedIds.includes( a.id ) );
       }
+
+      if ( mode === "taxonomy" ) {
+        return taxonomyAffiliations.slice( 0, count );
+      }
+
       const sorted = [ ...affiliations ];
       if ( mode === "random" ) {
         sorted.sort( () => Math.random() - 0.5 );
@@ -133,7 +160,7 @@ registerBlockType( "fnesl/affiliations", {
         sorted.sort( ( a, b ) => new Date( b.date ) - new Date( a.date ) );
       }
       return sorted.slice( 0, count );
-    }, [ affiliations, mode, count, pickedIds ] );
+    }, [ affiliations, taxonomyAffiliations, mode, count, pickedIds ] );
 
     const togglePicked = ( id, checked ) => {
       const next = checked
@@ -152,6 +179,7 @@ registerBlockType( "fnesl/affiliations", {
               options={ [
                 { label: __( "Latest", "fnesl" ),        value: "latest" },
                 { label: __( "Random", "fnesl" ),        value: "random" },
+                { label: __( "By taxonomy", "fnesl" ),   value: "taxonomy" },
                 { label: __( "Pick specific", "fnesl" ), value: "pick"   },
               ] }
               onChange={ ( v ) => setAttributes( { mode: v } ) }
@@ -166,6 +194,33 @@ registerBlockType( "fnesl/affiliations", {
               ] }
               onChange={ ( v ) => setAttributes( { displayType: v } ) }
             />
+
+            <SelectControl
+              label={ __( "Card style", "fnesl" ) }
+              value={ contentStyle }
+              options={ [
+                { label: __( "Regular", "fnesl" ), value: "full" },
+                { label: __( "Logo only", "fnesl" ), value: "logo" },
+              ] }
+              onChange={ ( v ) => setAttributes( { contentStyle: v } ) }
+            />
+
+            { mode === "taxonomy" && (
+              <SelectControl
+                label={ __( "Placement", "fnesl" ) }
+                value={ String( groupTermId ) }
+                options={ [
+                  { label: __( "Select a placement", "fnesl" ), value: "0" },
+                  ...( groups || [] ).map( ( group ) => ( {
+                    label: group.name,
+                    value: String( group.id ),
+                  } ) ),
+                ] }
+                onChange={ ( v ) =>
+                  setAttributes( { groupTermId: Number( v ) || 0 } )
+                }
+              />
+            ) }
 
             { mode !== "pick" && (
               <RangeControl
@@ -202,7 +257,7 @@ registerBlockType( "fnesl/affiliations", {
         </InspectorControls>
 
         <div { ...blockProps }>
-          { ! affiliations ? (
+          { ! affiliations || ! groups ? (
             <div style={ { padding: "24px", textAlign: "center" } }>
               <Spinner />
             </div>
@@ -210,7 +265,9 @@ registerBlockType( "fnesl/affiliations", {
             <p style={ { color: "#999", fontStyle: "italic", padding: "16px" } }>
               { mode === "pick"
                 ? __( "No affiliations selected.", "fnesl" )
-                : __( "No affiliations found.", "fnesl" ) }
+                : mode === "taxonomy"
+                  ? __( "No affiliations found for the selected group.", "fnesl" )
+                  : __( "No affiliations found.", "fnesl" ) }
             </p>
           ) : (
             <ul
@@ -230,7 +287,11 @@ registerBlockType( "fnesl/affiliations", {
               } }
             >
               { previewItems.map( ( a ) => (
-                <AffiliationCard key={ a.id } affiliation={ a } />
+                <AffiliationCard
+                  key={ a.id }
+                  affiliation={ a }
+                  contentStyle={ contentStyle }
+                />
               ) ) }
             </ul>
           ) }
