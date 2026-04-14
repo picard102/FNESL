@@ -80,7 +80,6 @@ if ( $project_id ) {
 		$project_img = (string) wp_get_attachment_image_url( $thumb_id, 'large' );
 	}
 
-
 	$terms = get_the_terms( $project_id, 'expertise' );
 	if ( $terms && ! is_wp_error( $terms ) ) {
 		$first = $terms[0] ?? null;
@@ -96,10 +95,6 @@ $has_inner = (bool) strlen( trim( (string) $content ) );
 
 ?>
 
-
-
-
-
 <div class="mx-auto alignfull ">
 
 <div class="max-w-[1800px]  mx-auto p-2 ">
@@ -108,9 +103,6 @@ $has_inner = (bool) strlen( trim( (string) $content ) );
 		style="background-color: <?php echo esc_attr( $background_color ); ?>; color: <?php echo esc_attr( $text_color ); ?>;" >
 
 		<?php get_template_part( 'parts/menu', null, null ); ?>
-
-
-
 
 		<div class="container py-12 px-6 grid grid-cols-3 items-end ">
 
@@ -124,61 +116,22 @@ $has_inner = (bool) strlen( trim( (string) $content ) );
 				<?php endif; ?>
 			</div>
 
+			<?php if ( 'none' !== $featured_mode ) : ?>
+				<div class="max-w-xs hidden md:block -mb-18 justify-self-end">
+					<div class="text-sm uppercase mb-4 font-semibold">Featured Project</div>
 
-
-
-	<?php if ( 'none' !== $featured_mode ) : ?>
-				<div class=" max-w-xs hidden md:block -mb-18 justify-self-end ">
-					<div class="text-sm uppercase mb-4 font-semibold ">Featured Project</div>
-
-					<?php if ( $project_id && $project_url ) : ?>
-						<a
-							href="<?php echo esc_url( $project_url ); ?>"
-							class="group h-full overflow-hidden rounded-xs  transition hover:shadow-sm focus:outline-none ring-offset-3 hover:ring-2 focus:ring-2 ring-primary-400 grid grid-cols-1 grid-rows-2  bg-white  text-white !no-underline ring-offset-primary-200 aspect-[7/9] p-1 border border-primary-300"
-							aria-label="<?php echo esc_attr( $project_title ); ?>"
-						>
-							<div class="relative  col-start-1 row-start-1 row-end-3  overflow-hidden   border border-primary-300  rounded-xs">
-								<?php if ( $project_img ) : ?>
-									<img
-										src="<?php echo esc_url( $project_img ); ?>"
-										alt=""
-										loading="lazy"
-										decoding="async"
-										class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-									>
-								<?php else : ?>
-									<div class="h-full w-full bg-primary-200/20"></div>
-								<?php endif; ?>
-							</div>
-
-							<div class="p-3 col-start-1 row-start-3 row-end-3 flex flex-col isolate  text-primary-600 items-start ">
-<?php
-$expertise_svg = '';
-if ( $expertise_term ) {
-	// Uses term icon meta + parent fallback. Returns '' if none found.
-	$expertise_svg = fnesl_inline_expertise_term_svg( $expertise_term, 'aspect-square h-4 w-4 fill-current mr-2 text-primary-600' );
-}
-?>
-
-<?php if ( $expertise_svg && $expertise_name ) : ?>
-	<div class="flex items-center expertise-label decoration-white col-start-1 row-start-1 isolate z-10 mt-2 mb-2">
-		<?php echo $expertise_svg; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="text-xs pl-2 border-l"><?php echo esc_html( $expertise_name ); ?></span>
-	</div>
-<?php endif; ?>
-
-								<h3 class="text-balance text-xl font-medium leading-tight">
-									<?php echo esc_html( $project_title ); ?>
-								</h3>
-
-								<p class="mt-6 text-sm text-primary-500 flex gap-3">
-									<span class="flex-1 bg-primary-500 text-white px-1 py-1 rounded-full inline-flex items-center">
-										<svg class="aspect-square h-3 fill-current" aria-hidden="true"><use xlink:href="#icons_arrow_east"></use></svg>
-									</span>
-									View Project
-								</p>
-							</div>
-						</a>
+					<?php if ( $project_id && $project_url ) :
+						$icon_data    = $expertise_term ? fnesl_get_expertise_icon_for_term( $expertise_term ) : null;
+						$project_json = wp_json_encode( array(
+							'id'            => $project_id,
+							'link'          => $project_url,
+							'title'         => $project_title,
+							'image'         => $project_img,
+							'expertiseName' => $expertise_name,
+							'expertiseIcon' => $icon_data ? array( 'url' => $icon_data['url'] ) : null,
+						) );
+					?>
+						<div data-home-hero-card data-project="<?php echo esc_attr( $project_json ); ?>"></div>
 					<?php else : ?>
 						<div class="bg-white text-primary-600 p-4 rounded-xs border border-primary-300">
 							<?php echo ( 'random' === $featured_mode )
@@ -189,16 +142,9 @@ if ( $expertise_term ) {
 				</div>
 			<?php endif; ?>
 
+		</div>
 
-</div>
-
-
-
-
-
-
-
-			<div class="  absolute inset-0 -z-10 overflow-hidden rounded-md  " aria-hidden="true">
+		<div class="  absolute inset-0 -z-10 overflow-hidden rounded-md  " aria-hidden="true">
 
 <?php if ( 'video' === $background_type && $background_video ) : ?>
 	<video autoplay muted loop playsinline
@@ -237,8 +183,6 @@ if ( $expertise_term ) {
 	</svg>
 </div>
 
-
-
 	<?php if ( $show_overlay ) : ?>
 	<div aria-hidden="true" class="absolute top-1/2 left-[max(-7rem,calc(50%-52rem))] -z-10 -translate-y-1/2 transform-gpu blur-2xl">
 		<div style="clip-path: polygon(74.8% 41.9%,97.2% 73.2%,100% 34.9%,92.5% 0.4%,87.5% 0%,75% 28.6%,58.5% 54.6%,50.1% 56.8%,46.9% 44%,48.3% 17.4%,24.7% 53.9%,0% 27.9%,11.9% 74.2%,24.9% 54.1%,68.6% 100%,74.8% 41.9%)" class="aspect-[577/310] w-[46rem] bg-gradient-to-r from-[#ff80b5] to-[#9089fc] opacity-40"></div>
@@ -248,13 +192,9 @@ if ( $expertise_term ) {
 	</div>
 	<?php endif; ?>
 
+		</div>
 
-			</div>
-
-			</div>
-
-
-
+	</div>
 
 </div>
 

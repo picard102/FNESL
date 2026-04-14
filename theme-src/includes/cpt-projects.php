@@ -311,22 +311,25 @@ function fnesl_resolve_term_icon( $term, $taxonomy = 'expertise', $meta_key = 'f
  *   "page": 1,
  *   "perPage": 12,
  *   "mode": "and" | "or",
- *   "terms": { "expertise":[1,2], "partners":[...], "location":[...], "client":[...], "award":[...] },
- *   "show": ["expertise","partners","location","client","award"],     // optional; used to limit filters returned
+ *   "terms": { "expertise":[1,2], "partners":[...], "location":[...], "client":[...], "awards":[...] },
+ *   "show": ["expertise","partners","location","client","awards"],    // optional; used to limit filters returned
  *   "includeFilters": true | false                                   // optional; default true
  * }
  */
 add_action( 'rest_api_init', function () {
 
-	register_rest_route( 'fnesl/v1', '/project-archive', [
-		'methods'             => 'POST',
-		'permission_callback' => '__return_true',
-		'callback'            => function ( WP_REST_Request $req ) {
+		register_rest_route( 'fnesl/v1', '/project-archive', [
+			'methods'             => 'POST',
+			'permission_callback' => '__return_true',
+			'callback'            => function ( WP_REST_Request $req ) {
 
-			$allowed_tax = [ 'expertise', 'partners', 'location', 'client', 'award' ];
+				$taxonomy_aliases = [
+					'awards' => 'award',
+				];
+				$allowed_tax = [ 'expertise', 'partners', 'location', 'client', 'award' ];
 
-			// --- Inputs ---
-			$page    = max( 1, (int) $req->get_param( 'page' ) );
+				// --- Inputs ---
+				$page    = max( 1, (int) $req->get_param( 'page' ) );
 
 			$perPage = (int) $req->get_param( 'perPage' );
 			$perPage = max( 1, min( 100, $perPage > 0 ? $perPage : 12 ) );
@@ -337,14 +340,26 @@ add_action( 'rest_api_init', function () {
 			$include_filters = $req->get_param( 'includeFilters' );
 			$include_filters = ( $include_filters === null ) ? true : (bool) $include_filters;
 
-			$terms_by_tax = (array) $req->get_param( 'terms' );
+				$terms_by_tax = (array) $req->get_param( 'terms' );
+				foreach ( $taxonomy_aliases as $public_tax => $internal_tax ) {
+					if ( isset( $terms_by_tax[ $public_tax ] ) && ! isset( $terms_by_tax[ $internal_tax ] ) ) {
+						$terms_by_tax[ $internal_tax ] = $terms_by_tax[ $public_tax ];
+					}
+				}
 
-			$show = $req->get_param( 'show' );
-			if ( is_string( $show ) ) {
-				$show = array_filter( array_map( 'trim', explode( ',', $show ) ) );
-			}
-			$show = is_array( $show ) ? $show : $allowed_tax;
-			$show = array_values( array_intersect( $allowed_tax, array_map( 'sanitize_key', $show ) ) );
+				$show = $req->get_param( 'show' );
+				if ( is_string( $show ) ) {
+					$show = array_filter( array_map( 'trim', explode( ',', $show ) ) );
+				}
+				$show = is_array( $show ) ? $show : array_merge( $allowed_tax, array_keys( $taxonomy_aliases ) );
+				$show = array_map( 'sanitize_key', $show );
+				$show = array_map(
+					static function ( $tax ) use ( $taxonomy_aliases ) {
+						return $taxonomy_aliases[ $tax ] ?? $tax;
+					},
+					$show
+				);
+				$show = array_values( array_unique( array_intersect( $allowed_tax, $show ) ) );
 
 			// --- Build tax_query ---
 			$tax_query = [ 'relation' => $mode ];
@@ -459,8 +474,8 @@ add_action( 'rest_api_init', function () {
 			if ( $include_filters ) {
 				$filters = [];
 
-				foreach ( $show as $tax ) {
-					if ( ! taxonomy_exists( $tax ) ) continue;
+					foreach ( $show as $tax ) {
+						if ( ! taxonomy_exists( $tax ) ) continue;
 
 					$terms = get_terms([
 						'taxonomy'   => $tax,
@@ -489,9 +504,10 @@ add_action( 'rest_api_init', function () {
 						];
 					}, $terms );
 
-					$filters[ $tax ] = $mapped;
+						$public_tax = array_search( $tax, $taxonomy_aliases, true );
+						$filters[ $public_tax ?: $tax ] = $mapped;
+					}
 				}
-			}
 
 			$response = [
 				'mode'       => strtolower( $mode ),

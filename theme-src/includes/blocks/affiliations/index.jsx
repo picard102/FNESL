@@ -105,7 +105,7 @@ const AffiliationCard = ( { affiliation } ) => {
 
 registerBlockType( "fnesl/affiliations", {
   edit: ( { attributes, setAttributes } ) => {
-    const { mode, count, pickedIds } = attributes;
+    const { mode, displayType, count, pickedIds } = attributes;
 
     const affiliations = useSelect(
       ( select ) =>
@@ -157,6 +157,16 @@ registerBlockType( "fnesl/affiliations", {
               onChange={ ( v ) => setAttributes( { mode: v } ) }
             />
 
+            <SelectControl
+              label={ __( "Layout", "fnesl" ) }
+              value={ displayType }
+              options={ [
+                { label: __( "Grid", "fnesl" ), value: "grid" },
+                { label: __( "Carousel", "fnesl" ), value: "carousel" },
+              ] }
+              onChange={ ( v ) => setAttributes( { displayType: v } ) }
+            />
+
             { mode !== "pick" && (
               <RangeControl
                 label={ __( "Number to show", "fnesl" ) }
@@ -206,10 +216,17 @@ registerBlockType( "fnesl/affiliations", {
             <ul
               style={ {
                 display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
+                gridTemplateColumns:
+                  displayType === "carousel"
+                    ? "repeat(auto-fit, minmax(320px, 1fr))"
+                    : "repeat(2, 1fr)",
                 gap: "24px",
                 margin: 0,
                 padding: 0,
+                overflowX: displayType === "carousel" ? "auto" : "visible",
+                gridAutoFlow: displayType === "carousel" ? "column" : "row",
+                gridAutoColumns:
+                  displayType === "carousel" ? "minmax(320px, 420px)" : "auto",
               } }
             >
               { previewItems.map( ( a ) => (

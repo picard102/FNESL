@@ -15,6 +15,10 @@
       "type": "string",
       "default": "latest"
     },
+    "displayType": {
+      "type": "string",
+      "default": "grid"
+    },
     "count": {
       "type": "integer",
       "default": 2
@@ -26,5 +30,6 @@
     }
   },
   "editorScript": "file:./index.js",
+  "script": "file:./frontend.js",
   "render": "file:./render.php"
 }

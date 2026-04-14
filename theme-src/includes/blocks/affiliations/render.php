@@ -6,11 +6,13 @@
  *   heading     string
  *   subheading  string
  *   mode        'latest' | 'random' | 'pick'
+ *   displayType 'grid' | 'carousel'
  *   count       int
  *   pickedIds   int[]
  */
 
-$mode = $attributes['mode'] ?? 'latest';
+$mode       = $attributes['mode'] ?? 'latest';
+$display    = $attributes['displayType'] ?? 'grid';
 $count      = max( 1, (int) ( $attributes['count'] ?? 2 ) );
 $picked_ids = array_filter( array_map( 'intval', $attributes['pickedIds'] ?? [] ) );
 
@@ -37,50 +39,74 @@ $affiliations = get_posts( $query_args );
 if ( empty( $affiliations ) ) {
 	return '';
 }
+
+$items = [];
+foreach ( $affiliations as $affiliation ) {
+	$logo_id = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true );
+	$url     = (string) get_post_meta( $affiliation->ID, 'affiliation_url', true );
+
+	if ( ! $logo_id ) {
+		continue;
+	}
+
+	$logo_html = wp_get_attachment_image(
+		$logo_id,
+		'full',
+		false,
+		[
+			'class' => 'w-full max-h-[100px] h-auto object-contain',
+			'alt'   => esc_attr( get_the_title( $affiliation->ID ) ) . ' logo',
+		]
+	);
+
+	if ( ! $logo_html ) {
+		continue;
+	}
+
+	$items[] = [
+		'id'               => (int) $affiliation->ID,
+		'title'            => get_the_title( $affiliation->ID ),
+		'description_html' => wp_kses_post( wpautop( get_post_field( 'post_content', $affiliation->ID ) ) ),
+		'url'              => $url ? esc_url( $url ) : '',
+		'logo_html'        => $logo_html,
+	];
+}
+
+if ( empty( $items ) ) {
+	return '';
+}
+
 $wrapper_attrs = get_block_wrapper_attributes( [
 	'class' => 'container',
 ] );
 ?>
 <div <?php echo $wrapper_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+	<?php if ( 'carousel' === $display ) : ?>
+		<div
+			data-affiliations-carousel
+			data-config="<?php echo esc_attr( wp_json_encode( [ 'items' => $items ] ) ); ?>"
+		></div>
+	<?php else : ?>
 	<ul class="grid grid-cols-2 gap-6">
-		<?php foreach ( $affiliations as $affiliation ) :
-			$logo_id  = (int) get_post_meta( $affiliation->ID, 'affiliation_svg_logo_id', true );
-			$url      = (string) get_post_meta( $affiliation->ID, 'affiliation_url', true );
-
-			if ( ! $logo_id ) {
-				continue;
-			}
-
-			$logo_html = wp_get_attachment_image(
-				$logo_id,
-				'full',
-				false,
-				[
-					'class' => 'w-full max-h-[100px] h-auto object-contain',
-					'alt'   => esc_attr( get_the_title( $affiliation->ID ) ) . ' logo',
-				]
-			);
-		?>
+		<?php foreach ( $items as $item ) : ?>
 		<li class="bg-white rounded-sm p-6 grid grid-cols-[1fr_2fr] gap-6">
 			<div class="flex items-center justify-center">
-				<?php if ( $logo_html ) : ?>
-					<?php if ( $url ) : ?>
-						<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer" class="block w-full">
-							<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-						</a>
-					<?php else : ?>
-						<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-					<?php endif; ?>
+				<?php if ( $item['url'] ) : ?>
+					<a href="<?php echo esc_url( $item['url'] ); ?>" target="_blank" rel="noopener noreferrer" class="block w-full">
+						<?php echo $item['logo_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					</a>
+				<?php else : ?>
+					<?php echo $item['logo_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php endif; ?>
 			</div>
 			<div class="flex flex-col justify-center items-start self-start">
-				<h3 class="text-xl mb-2"><?php echo esc_html( get_the_title( $affiliation->ID ) ); ?></h3>
+				<h3 class="text-xl mb-2"><?php echo esc_html( $item['title'] ); ?></h3>
 				<div class="text-sm text-primary-900">
-					<?php echo wp_kses_post( wpautop( get_post_field( 'post_content', $affiliation->ID ) ) ); ?>
+					<?php echo $item['description_html']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</div>
-				<?php if ( $url ) : ?>
+				<?php if ( $item['url'] ) : ?>
 				<a
-					href="<?php echo esc_url( $url ); ?>"
+					href="<?php echo esc_url( $item['url'] ); ?>"
 					class="mt-6 text-sm text-primary-500 flex gap-3"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -97,4 +123,5 @@ $wrapper_attrs = get_block_wrapper_attributes( [
 		</li>
 		<?php endforeach; ?>
 	</ul>
+	<?php endif; ?>
 </div>
