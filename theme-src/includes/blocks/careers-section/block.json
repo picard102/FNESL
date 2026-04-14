@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "fnesl/careers-section",
+  "title": "Careers Section",
+  "category": "fnesl",
+  "icon": "businessperson",
+  "description": "Displays a careers section with open job listings and an optional CTA.",
+  "supports": {
+    "align": ["wide", "full"],
+    "html": false
+  },
+  "attributes": {
+    "count": {
+      "type": "integer",
+      "default": 6
+    }
+  },
+  "editorScript": "file:./index.js",
+  "script": "file:./frontend.js",
+  "render": "file:./render.php"
+}

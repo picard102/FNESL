@@ -4,6 +4,7 @@
 require_once __DIR__ . '/includes/cpt-projects.php';
 require_once __DIR__ . '/includes/cpt-profiles.php';
 require_once __DIR__ . '/includes/cpt-affiliations.php';
+require_once __DIR__ . '/includes/cpt-jobs.php';
 require_once __DIR__ . '/includes/settings.php';
 require_once get_template_directory() . '/includes/assets.php';
 
@@ -17,6 +18,7 @@ add_action('init', function () {
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/home-hero' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/affiliations' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/news-cards' );
+	register_block_type( get_stylesheet_directory() . '/includes/blocks/careers-section' );
 	register_block_type( get_stylesheet_directory() . '/includes/blocks/responsive-grid' );
 });
 
